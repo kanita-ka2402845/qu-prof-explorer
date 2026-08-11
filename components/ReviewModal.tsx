@@ -8,7 +8,6 @@ import {
 } from "@/lib/queries";
 import type { FullInstructor } from "@/app/professors/[slug]/page";
 
-// @ts-expect-error no types
 import leoProfanity from "leo-profanity";
 
 type Props = {
