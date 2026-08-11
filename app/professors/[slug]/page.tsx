@@ -7,6 +7,7 @@ import ReviewMosaic from "@/components/ReviewMosaic";
 import InstructorHeader from "@/components/InstructorHeader";
 import AuthModal from "@/components/AuthModal";
 import { useAuth } from "@/components/AuthContext";
+import ReviewModal from "@/components/ReviewModal";
 
 export type FullInstructor = {
   id: string;
@@ -67,9 +68,11 @@ export default function ProfessorPage() {
 const { session } = useAuth();
 const [showAuth, setShowAuth] = useState(false);
 
+const [showReviewModal, setShowReviewModal] = useState(false);
+
 function handleWriteReview() {
   if (session) {
-    // TODO: open review form — next step
+    setShowReviewModal(true);
   } else {
     setShowAuth(true);
   }
@@ -183,10 +186,23 @@ function handleWriteReview() {
       </div>
       {showAuth && (
   <AuthModal
-    onClose={() => setShowAuth(false)}
+  onClose={() => setShowAuth(false)}
+  onSuccess={async () => {
+    setShowAuth(false);
+    // Small delay to let auth state propagate
+    await new Promise(r => setTimeout(r, 300));
+    setShowReviewModal(true);
+  }}
+/>
+)}
+{showReviewModal && instructor && (
+  <ReviewModal
+    instructor={instructor}
+    onClose={() => setShowReviewModal(false)}
     onSuccess={() => {
-      setShowAuth(false);
-      // TODO: open review form — next step
+      setShowReviewModal(false);
+      // Reload reviews
+      window.location.reload();
     }}
   />
 )}

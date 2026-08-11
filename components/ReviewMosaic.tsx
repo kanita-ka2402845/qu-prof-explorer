@@ -50,7 +50,7 @@ export default function ReviewMosaic({ reviews, instructorId, onWriteReview }: P
       {reviews.length === 0 && (
         <div
           className="flex flex-col items-center justify-center py-20 rounded-xl"
-          style={{ border: "1px solid var(--hair)", background: "var(--graph)", position: "relative", zIndex: 50 }}
+          style={{ border: "1px solid var(--hair)", background: "var(--graph)" }}
         >
           <p
             className="font-mono text-[11px] tracking-widest mb-6"
@@ -60,7 +60,13 @@ export default function ReviewMosaic({ reviews, instructorId, onWriteReview }: P
           </p>
           <button
             className="font-mono text-[11px] tracking-widest px-6 py-3 rounded-lg transition-opacity hover:opacity-85"
-            style={{ position: "relative", zIndex: 51 }}
+                style={{
+              background: "var(--lumen-bright)",
+              color: "var(--void)",
+              border: "none",
+              cursor: "pointer",
+              fontFamily: "inherit",
+            }}
             onClick={() => { console.log("button clicked"); onWriteReview(); }}
           >
             WRITE A REVIEW ↗
