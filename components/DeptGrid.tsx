@@ -1,18 +1,35 @@
 "use client";
+import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { colleges } from "@/lib/data";
+import { getDepartmentsByCollege } from "@/lib/queries";
+import type { Department } from "@/lib/data";
 
 type Props = {
-  collegeId: string;
-  selectedDept: string | null;
-  onSelect: (dept: string) => void;
+  collegeSlug: string;
+  selectedDeptId: string | null;
+  onSelect: (id: string, name: string) => void;
 };
 
-export default function DeptGrid({ collegeId, selectedDept, onSelect }: Props) {
-  const college = colleges.find((c) => c.id === collegeId);
-  if (!college) return null;
-  const depts = Object.entries(college.depts);
-  const count = depts.length;
+export default function DeptGrid({ collegeSlug, selectedDeptId, onSelect }: Props) {
+  const [depts, setDepts] = useState<Department[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    setLoading(true);
+    getDepartmentsByCollege(collegeSlug).then((data) => {
+      setDepts(data);
+      setLoading(false);
+    });
+  }, [collegeSlug]);
+
+  if (loading) return (
+    <div
+      className="px-8 py-5 font-mono text-[10px] tracking-widest"
+      style={{ color: "var(--muted)", borderBottom: "1px solid var(--hair)" }}
+    >
+      LOADING DEPARTMENTS...
+    </div>
+  );
 
   return (
     <motion.section
@@ -28,27 +45,23 @@ export default function DeptGrid({ collegeId, selectedDept, onSelect }: Props) {
         >
           Departments
         </span>
-        <span className="font-mono text-[10px]" style={{ color: "var(--fore)" }}>
-          · {college.name}
-        </span>
       </div>
 
-      {/* Equal-width grid — always fills full container */}
       <div
         style={{
           display: "grid",
-          gridTemplateColumns: `repeat(${count}, 1fr)`,
+          gridTemplateColumns: `repeat(${depts.length}, 1fr)`,
           gap: "1px",
           background: "var(--hair)",
           borderTop: "1px solid var(--hair)",
         }}
       >
-        {depts.map(([name, instructors]) => {
-          const isSel = selectedDept === name;
+        {depts.map((dept) => {
+          const isSel = selectedDeptId === dept.id;
           return (
             <button
-              key={name}
-              onClick={() => onSelect(name)}
+              key={dept.id}
+              onClick={() => onSelect(dept.id, dept.name)}
               className="text-left p-5 transition-all duration-200 relative"
               style={{
                 background: isSel ? "var(--panel)" : "var(--graph)",
@@ -56,15 +69,12 @@ export default function DeptGrid({ collegeId, selectedDept, onSelect }: Props) {
                 cursor: "pointer",
               }}
               onMouseEnter={(e) => {
-                if (!isSel)
-                  (e.currentTarget as HTMLButtonElement).style.background = "var(--panel)";
+                if (!isSel) (e.currentTarget as HTMLButtonElement).style.background = "var(--panel)";
               }}
               onMouseLeave={(e) => {
-                if (!isSel)
-                  (e.currentTarget as HTMLButtonElement).style.background = "var(--graph)";
+                if (!isSel) (e.currentTarget as HTMLButtonElement).style.background = "var(--graph)";
               }}
             >
-              {/* Radial matte glow — Lumen card signature */}
               <div
                 className="absolute inset-0 pointer-events-none"
                 style={{
@@ -73,18 +83,14 @@ export default function DeptGrid({ collegeId, selectedDept, onSelect }: Props) {
                   transition: "opacity 0.2s",
                 }}
               />
-
-              {/* Bottom horizon accent when selected */}
               {isSel && (
                 <div
                   className="absolute bottom-0 left-0 right-0 h-[1px]"
                   style={{
-                    background:
-                      "linear-gradient(90deg, transparent, rgba(200,208,224,0.45), transparent)",
+                    background: "linear-gradient(90deg, transparent, rgba(200,208,224,0.45), transparent)",
                   }}
                 />
               )}
-
               <div
                 className="w-[5px] h-[5px] rounded-full mb-3"
                 style={{
@@ -100,10 +106,7 @@ export default function DeptGrid({ collegeId, selectedDept, onSelect }: Props) {
                   transition: "color 0.2s",
                 }}
               >
-                {name}
-              </p>
-              <p className="font-mono text-[10px] mt-1" style={{ color: "var(--muted)" }}>
-                {instructors.length} instructor{instructors.length !== 1 ? "s" : ""}
+                {dept.name}
               </p>
             </button>
           );

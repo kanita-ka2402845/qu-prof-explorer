@@ -1,13 +1,34 @@
 "use client";
+import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { colleges } from "@/lib/data";
+import { getColleges } from "@/lib/queries";
+import type { College } from "@/lib/data";
 
 type Props = {
   selectedId: string | null;
-  onSelect: (id: string) => void;
+  onSelect: (id: string, slug: string, name: string) => void;
 };
 
 export default function CollegeStrip({ selectedId, onSelect }: Props) {
+  const [colleges, setColleges] = useState<College[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    getColleges().then((data) => {
+      setColleges(data);
+      setLoading(false);
+    });
+  }, []);
+
+  if (loading) return (
+    <div
+      className="px-8 py-5 font-mono text-[10px] tracking-widest"
+      style={{ color: "var(--muted)", borderBottom: "1px solid var(--hair)" }}
+    >
+      LOADING COLLEGES...
+    </div>
+  );
+
   return (
     <motion.section
       initial={{ opacity: 0, y: -8 }}
@@ -22,7 +43,6 @@ export default function CollegeStrip({ selectedId, onSelect }: Props) {
         — Choose your college
       </p>
 
-      {/* Equal-width grid — fills full width, no empty gap */}
       <div
         style={{
           display: "grid",
@@ -34,7 +54,7 @@ export default function CollegeStrip({ selectedId, onSelect }: Props) {
           return (
             <button
               key={col.id}
-              onClick={() => onSelect(col.id)}
+              onClick={() => onSelect(col.id, col.slug, col.name)}
               className="relative py-4 text-[13px] font-medium transition-all duration-200 text-center"
               style={{
                 color: isSel ? "var(--lumen-bright)" : "var(--muted)",

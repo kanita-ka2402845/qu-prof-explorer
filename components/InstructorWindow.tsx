@@ -1,28 +1,43 @@
 "use client";
-import { useState, useMemo } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { motion } from "framer-motion";
 import { Search } from "lucide-react";
-import { colleges, type Instructor } from "@/lib/data";
+import { getInstructorsByDepartment } from "@/lib/queries";
+import type { Instructor } from "@/lib/data";
+import { useRouter } from "next/navigation";
 
 type Props = {
-  collegeId: string;
-  dept: string;
+  departmentId: string;
+  departmentName: string;
+  collegeName: string;
+  collegeSlug: string;
 };
 
-export default function InstructorWindow({ collegeId, dept }: Props) {
+export default function InstructorWindow({ departmentId, departmentName, collegeName, collegeSlug }: Props) {
+  const [instructors, setInstructors] = useState<Instructor[]>([]);
+  const [loading, setLoading] = useState(true);
   const [query, setQuery] = useState("");
+  const router = useRouter();
 
-  const college = colleges.find((c) => c.id === collegeId);
-  const allInstructors: Instructor[] = college?.depts[dept] ?? [];
+  useEffect(() => {
+    setLoading(true);
+    getInstructorsByDepartment(departmentId).then((data) => {
+      setInstructors(data);
+      setLoading(false);
+    });
+  }, [departmentId]);
 
   const filtered = useMemo(() => {
     const q = query.toLowerCase();
-    return allInstructors.filter(
+    return instructors.filter(
       (i) =>
-        i.name.toLowerCase().includes(q) ||
-        i.courses.toLowerCase().includes(q)
+        i.full_name.toLowerCase().includes(q) ||
+        i.courses?.some((c) => c.code.toLowerCase().includes(q))
     );
-  }, [allInstructors, query]);
+  }, [instructors, query]);
+
+  const courseList = (inst: Instructor) =>
+    inst.courses?.map((c) => c.code).join(", ") ?? "—";
 
   return (
     <motion.section
@@ -31,17 +46,10 @@ export default function InstructorWindow({ collegeId, dept }: Props) {
       transition={{ duration: 0.35, ease: [0.15, 0.83, 0.66, 1] }}
       className="px-8 py-7"
     >
-      {/* Mac-chrome window */}
       <div
         className="rounded-xl overflow-hidden relative"
-        style={{
-          background: "var(--graph)",
-          border: "1px solid var(--hair2)",
-          /* Lumen bottom glow */
-          boxShadow: "0 0 0 0 transparent",
-        }}
+        style={{ background: "var(--graph)", border: "1px solid var(--hair2)" }}
       >
-        {/* horizon glow at bottom of window */}
         <div
           className="absolute bottom-0 left-0 right-0 h-[1px] pointer-events-none"
           style={{ background: "var(--horizon)" }}
@@ -52,7 +60,6 @@ export default function InstructorWindow({ collegeId, dept }: Props) {
           className="flex items-center gap-3 px-4 py-3"
           style={{ borderBottom: "1px solid var(--hair)", background: "var(--panel)" }}
         >
-          {/* traffic lights */}
           <div className="flex gap-[5px]">
             {["#ff5f57", "#febc2e", "#28c840"].map((c) => (
               <span key={c} className="w-[9px] h-[9px] rounded-full" style={{ background: c }} />
@@ -62,16 +69,13 @@ export default function InstructorWindow({ collegeId, dept }: Props) {
             className="font-mono text-[11px] tracking-[0.06em] mx-auto"
             style={{ color: "var(--muted)" }}
           >
-            {collegeId.toUpperCase()} / {dept.toUpperCase()}
+            {collegeName.toUpperCase()} / {departmentName.toUpperCase()}
           </span>
           <span
             className="font-mono text-[10px] px-2 py-[2px] rounded"
-            style={{
-              color: "var(--muted)",
-              border: "1px solid var(--hair2)",
-            }}
+            style={{ color: "var(--muted)", border: "1px solid var(--hair2)" }}
           >
-            {allInstructors.length} instructors
+            {instructors.length} instructors
           </span>
         </div>
 
@@ -87,60 +91,45 @@ export default function InstructorWindow({ collegeId, dept }: Props) {
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             className="flex-1 bg-transparent outline-none text-[13px]"
-            style={{
-              color: "var(--lumen-bright)",
-              fontFamily: "inherit",
-            }}
+            style={{ color: "var(--lumen-bright)", fontFamily: "inherit" }}
           />
         </div>
 
-        {/* Instructor list */}
+        {/* List */}
         <div style={{ maxHeight: "280px", overflowY: "auto" }}>
-          {filtered.length === 0 ? (
-            <p
-              className="font-mono text-[12px] text-center py-10"
-              style={{ color: "var(--muted)" }}
-            >
+          {loading ? (
+            <p className="font-mono text-[11px] text-center py-10" style={{ color: "var(--muted)" }}>
+              LOADING...
+            </p>
+          ) : filtered.length === 0 ? (
+            <p className="font-mono text-[11px] text-center py-10" style={{ color: "var(--muted)" }}>
               NO INSTRUCTORS FOUND.
             </p>
           ) : (
             filtered.map((inst, idx) => (
               <div
-                key={inst.name}
-                className="group grid items-center px-4 py-3 transition-colors duration-100"
+                key={inst.id}
+                className="grid items-center px-4 py-3 transition-colors duration-100"
                 style={{
                   gridTemplateColumns: "1fr auto auto",
                   gap: "16px",
                   borderBottom: idx < filtered.length - 1 ? "1px solid var(--hair)" : "none",
                   cursor: "pointer",
                 }}
-                onMouseEnter={(e) =>
-                  ((e.currentTarget as HTMLDivElement).style.background = "var(--panel)")
-                }
-                onMouseLeave={(e) =>
-                  ((e.currentTarget as HTMLDivElement).style.background = "transparent")
-                }
+                onMouseEnter={(e) => ((e.currentTarget as HTMLDivElement).style.background = "var(--panel)")}
+                onMouseLeave={(e) => ((e.currentTarget as HTMLDivElement).style.background = "transparent")}
               >
                 <div>
-                  <p
-                    className="text-[13px] font-medium"
-                    style={{ color: "var(--lumen)" }}
-                  >
-                    {inst.name}
+                  <p className="text-[13px] font-medium" style={{ color: "var(--lumen)" }}>
+                    {inst.full_name}
                   </p>
-                  <p
-                    className="font-mono text-[10px] mt-[3px]"
-                    style={{ color: "var(--muted)" }}
-                  >
-                    {inst.courses} · {inst.reviews} reviews
+                  <p className="font-mono text-[10px] mt-[3px]" style={{ color: "var(--muted)" }}>
+                    {courseList(inst)} · {inst.review_count} reviews
                   </p>
                 </div>
 
-                <span
-                  className="font-mono text-[12px]"
-                  style={{ color: "var(--fore)" }}
-                >
-                  {inst.rating.toFixed(1)} / 5.0
+                <span className="font-mono text-[12px]" style={{ color: "var(--fore)" }}>
+                  {inst.signal_strength > 0 ? `${inst.signal_strength.toFixed(1)} signal` : "—"}
                 </span>
 
                 <button
@@ -161,6 +150,8 @@ export default function InstructorWindow({ collegeId, dept }: Props) {
                     (e.currentTarget as HTMLButtonElement).style.color = "var(--muted)";
                     (e.currentTarget as HTMLButtonElement).style.borderColor = "var(--hair2)";
                   }}
+
+                  onClick={() => router.push(`/professors/${inst.slug}?college=${encodeURIComponent(collegeSlug)}&dept=${encodeURIComponent(departmentId)}&collegeName=${encodeURIComponent(collegeName)}&deptName=${encodeURIComponent(departmentName)}`)}
                 >
                   View ↗
                 </button>
