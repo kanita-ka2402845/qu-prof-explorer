@@ -180,7 +180,7 @@ export default function AuthModal({ onClose, onSuccess }: Props) {
                     className="text-[13px] leading-relaxed mb-2"
                     style={{ color: "var(--fore)" }}
                   >
-                    We sent a 6-digit code to{" "}
+                    We sent a 8-digit code to{" "}
                     <strong style={{ color: "var(--lumen)" }}>{email}</strong>
                   </p>
                   <button
@@ -197,24 +197,24 @@ export default function AuthModal({ onClose, onSuccess }: Props) {
                   >
                     Verification code
                   </label>
-                  <input
-                    type="text"
-                    inputMode="numeric"
-                    placeholder="000000"
-                    maxLength={6}
-                    value={otp}
-                    onChange={(e) => setOtp(e.target.value.replace(/\D/g, ""))}
-                    onKeyDown={(e) => e.key === "Enter" && handleOTPSubmit()}
-                    className="w-full rounded-lg px-4 py-3 text-[20px] font-mono outline-none mb-6 text-center tracking-[0.3em]"
-                    style={{
-                      background: "var(--void)",
-                      border: "1px solid var(--hair2)",
-                      color: "var(--lumen-bright)",
-                      fontFamily: "'Space Mono', monospace",
-                    }}
-                    onFocus={(e) => (e.currentTarget.style.borderColor = "rgba(255,255,255,0.28)")}
-                    onBlur={(e) => (e.currentTarget.style.borderColor = "var(--hair2)")}
-                  />
+                 <input
+  type="text"
+  inputMode="numeric"
+  placeholder="00000000"
+  maxLength={8}
+  value={otp}
+  onChange={(e) => setOtp(e.target.value.replace(/\D/g, ""))}
+  onKeyDown={(e) => e.key === "Enter" && handleOTPSubmit()}
+  className="w-full rounded-lg px-4 py-3 text-[20px] font-mono outline-none mb-6 text-center tracking-[0.3em]"
+  style={{
+    background: "var(--void)",
+    border: "1px solid var(--hair2)",
+    color: "var(--lumen-bright)",
+    fontFamily: "'Space Mono', monospace",
+  }}
+  onFocus={(e) => (e.currentTarget.style.borderColor = "rgba(255,255,255,0.28)")}
+  onBlur={(e) => (e.currentTarget.style.borderColor = "var(--hair2)")}
+/>
 
                   {error && (
                     <p className="font-mono text-[11px] mb-4" style={{ color: "#ff5f57" }}>
@@ -224,14 +224,14 @@ export default function AuthModal({ onClose, onSuccess }: Props) {
 
                   <button
                     onClick={handleOTPSubmit}
-                    disabled={loading || otp.length < 6}
+                    disabled={loading || otp.length < 8}
                     className="w-full rounded-lg py-3 text-[13px] font-semibold transition-opacity"
                     style={{
                       background: "var(--lumen-bright)",
                       color: "var(--void)",
                       border: "none",
                       cursor: loading ? "not-allowed" : "pointer",
-                      opacity: loading || otp.length < 6 ? 0.5 : 1,
+                      opacity: loading || otp.length < 8 ? 0.5 : 1,
                       fontFamily: "inherit",
                     }}
                   >

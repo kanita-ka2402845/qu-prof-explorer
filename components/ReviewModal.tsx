@@ -197,14 +197,15 @@ export default function ReviewModal({ instructor, onClose, onSuccess }: Props) {
         animate={{ opacity: 1, y: 0, scale: 1 }}
         exit={{ opacity: 0, y: 20, scale: 0.97 }}
         transition={{ duration: 0.28, ease: [0.15, 0.83, 0.66, 1] }}
-        className="fixed z-50 w-full"
-        style={{
-          maxWidth: "560px",
-          top: "50%", left: "50%",
-          transform: "translate(-50%, -50%)",
-          maxHeight: "90vh",
-          overflowY: "auto",
-        }}
+        className="fixed z-50 w-full flex items-center justify-center"
+style={{
+  maxWidth: "560px",
+  top: "5vh",
+  left: "50%",
+  transform: "translateX(-50%)",
+  maxHeight: "90vh",
+  overflowY: "auto",
+}}
         onClick={(e) => e.stopPropagation()}
       >
         <div
