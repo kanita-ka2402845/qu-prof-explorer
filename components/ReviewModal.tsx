@@ -3,6 +3,7 @@ import { useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useAuth } from "@/components/AuthContext";
 import type { FullInstructor } from "@/app/professors/[slug]/page";
+import { X} from "lucide-react";
 
 import leoProfanity from "leo-profanity";
 
