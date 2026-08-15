@@ -142,7 +142,7 @@ function handleWriteReview() {
 
 
   return (
-    <main className="min-h-screen" style={{ background: "var(--void)" }}>
+    <main className="min-h-screen">
       <div className="mx-auto max-w-5xl" style={{ border: "1px solid var(--hair)" }}>
 
         {/* Nav bar */}
