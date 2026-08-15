@@ -32,7 +32,7 @@ export async function POST(req: NextRequest) {
         <p style="color: #4a4f5a; font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 24px;">QU PROF EXPLORER</p>
         <h2 style="font-size: 18px; font-weight: 600; margin-bottom: 8px;">Your verification code</h2>
         <p style="color: #8a909c; margin-bottom: 32px;">Enter this code to sign in. Expires in 10 minutes.</p>
-        <div style="font-size: 36px; font-weight: 700; letter-spacing: 12px; color: #e8edf5; background: #1a1c20; padding: 24px; border-radius: 8px; text-align: center; border: 1px solid rgba(255,255,255,0.07);">
+        <div style="font-size: 30px; font-weight: 700; letter-spacing: 12px; color: #e8edf5; background: #1a1c20; padding: 24px; border-radius: 8px; text-align: center; border: 1px solid rgba(255,255,255,0.07);">
           ${otp}
         </div>
         <p style="color: #4a4f5a; font-size: 11px; margin-top: 24px;">If you didn't request this, ignore this email.</p>

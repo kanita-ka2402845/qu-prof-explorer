@@ -9,21 +9,23 @@
 
 :root {
   /* Lumen Edge palette */
-  --void:    #0d0e10;
-  --graph:   #141618;
-  --panel:   #1a1c20;
-  --slate:   #252830;
-  --hair:    rgba(255,255,255,0.07);
-  --hair2:   rgba(255,255,255,0.12);
-  --muted:   #4a4f5a;
-  --fore:    #8a909c;
-  --lumen:   #c8d0e0;
-  --lumen-bright: #e8edf5;
-  --horizon: linear-gradient(90deg, transparent 0%, rgba(107,122,148,0.15) 25%, rgba(154,170,200,0.45) 50%, rgba(107,122,148,0.15) 75%, transparent 100%);
-  /* radial glow for cards */
-  --radial-glow: radial-gradient(ellipse 80% 55% at 50% 110%, rgba(154,170,200,0.12) 0%, transparent 70%);
-}
+  --void:         #0b0c0e; /* Deep background canvas */
+  --graph:        #121417; /* Secondary container / subtle grid background */
+  --panel:        #181a1e; /* Card base surface */
+  --slate:        #2b303a; /* Interactive/hover state background */
+  
+  /* Text & Content Tokens */
+  --muted:        #5a6170; /* Captions, micro-labels, metadata */
+  --fore:         #8d94a5; /* Secondary body text */
+  --lumen:        #c8d2e6; /* Primary body text / headings */
+  --lumen-bright: #f0f4fc; /* High-contrast titles & emphasis */
 
+  /* Borders & Inset Rims */
+  --hair:         rgba(255, 255, 255, 0.07); /* Standard card borders */
+  --hair2:        rgba(255, 255, 255, 0.14); /* Subtle hover / active borders */
+  --horizon: linear-gradient(90deg, transparent 0%, rgba(107, 122, 148, 0.2) 20%, rgba(200, 215, 240, 0.7) 50%, rgba(107, 122, 148, 0.2) 80%, transparent 100%);
+  --radial-glow: radial-gradient(ellipse 90% 60% at 50% 115%, rgba(154, 170, 200, 0.12) 0%, transparent 75%);
+}
 * { box-sizing: border-box; }
 
 html { scroll-behavior: smooth; }
@@ -32,8 +34,8 @@ body {
   background: var(--void);
   color: var(--lumen-bright);
   font-family: 'Space Grotesk', system-ui, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: auto;  
+  -moz-osx-font-smoothing: auto;
   overflow-x: hidden;
 }
 

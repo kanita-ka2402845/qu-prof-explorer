@@ -102,3 +102,43 @@ export async function getInstructorsByDepartment(departmentId: string): Promise<
   if (error) { console.error(error); return [] }
   return data ?? []
 }
+
+export async function addCourseToInstructor(
+  instructorId: string,
+  code: string
+): Promise<{ id: string; code: string; name: null } | null> {
+  const { data } = await supabase
+    .from("courses")
+    .insert({ instructor_id: instructorId, code: code.trim().toUpperCase(), name: null })
+    .select("id, code, name")
+    .single();
+  return data;
+}
+
+export async function toggleHelpfulVote(
+  reviewId: string,
+  userId: string
+): Promise<{ voted: boolean; error: string | null }> {
+  const { data: existing } = await supabase
+    .from("helpful_votes")
+    .select("id")
+    .eq("review_id", reviewId)
+    .eq("voter_id", userId)
+    .single();
+
+  if (existing) {
+    await supabase.from("helpful_votes").delete().eq("id", existing.id);
+    return { voted: false, error: null };
+  } else {
+    await supabase.from("helpful_votes").insert({ review_id: reviewId, voter_id: userId });
+    return { voted: true, error: null };
+  }
+}
+
+export async function getUserVotes(userId: string): Promise<string[]> {
+  const { data } = await supabase
+    .from("helpful_votes")
+    .select("review_id")
+    .eq("voter_id", userId);
+  return data?.map((v) => v.review_id) ?? [];
+}

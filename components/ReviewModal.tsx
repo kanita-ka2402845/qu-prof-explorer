@@ -3,12 +3,11 @@ import { useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, ChevronLeft } from "lucide-react";
 import { useAuth } from "@/components/AuthContext";
-import {
-  getUserReviewCount, getTags, createCustomTag, submitReview
-} from "@/lib/queries";
 import type { FullInstructor } from "@/app/professors/[slug]/page";
 
 import leoProfanity from "leo-profanity";
+
+import { getUserReviewCount, getTags, createCustomTag, submitReview, addCourseToInstructor } from "@/lib/queries";
 
 type Props = {
   instructor: FullInstructor;
@@ -16,37 +15,32 @@ type Props = {
   onSuccess: () => void;
 };
 
-type Step = "conscience" | "form" | "success";
+type Step = "form" | "conscience" | "success";
 
 // ── Islamic references per attempt ──────────────────────────
 const CONSCIENCE_LEVELS = [
   {
     verse: "\"And do not spy or backbite each other. Would one of you like to eat the flesh of his dead brother? You would detest it.\"",
     source: "Surah Al-Hujurat 49:12",
-    checkbox: "I am reviewing how this instructor teaches — not who they are as a person.",
-    showThink: true,
+    checkbox: "I am reviewing how this instructor teaches — not who they are as a person."
   },
   {
     verse: "\"Man does not utter any word except that with him is an observer prepared to record.\"",
     source: "Surah Qaf 50:18",
-    checkbox: "This reflects my genuine experience — not frustration from one bad exam.",
-    showThink: false,
+    checkbox: "This reflects my genuine experience — not frustration from one bad exam."
   },
   {
     verse: "\"Every movement of the tongue is either a step toward Paradise or a step toward the Fire. Guard it as you guard your life.\"",
     source: "Ibn Qayyim",
-    checkbox: "I would stand behind these words if asked to explain them.",
-    showThink: false,
+    checkbox: "I would stand behind these words if asked to explain them."
   },
   {
     verse: "\"O you who have believed, fear Allah and speak words of appropriate justice.\"",
-    source: "Surah Al-Ahzab 33:70",
-    showThink: false,
+    source: "Surah Al-Ahzab 33:70"
   },
   {
     verse: "\"The tongue has no bones, but it is strong enough to break a heart. So be careful with your words.\"",
-    source: null,
-    showThink: false,
+    source: null
   },
 ];
 
@@ -55,7 +49,6 @@ const TEACHING_STYLES = [
   { value: "explains_beyond_slides", label: "Explains beyond slides" },
   { value: "discussion_based",       label: "Discussion-based" },
   { value: "heavy_examples",         label: "Heavy on examples" },
-  { value: "research_focused",       label: "Research-focused" },
   { value: "mixed",                  label: "Mixed / varies" },
 ];
 
@@ -72,11 +65,10 @@ const GRADE_OPTIONS = [
 
 export default function ReviewModal({ instructor, onClose, onSuccess }: Props) {
   const { session } = useAuth();
-  const [step, setStep] = useState<Step>("conscience");
+ const [step, setStep] = useState<Step>("form");
   const [conscienceLevel, setConscienceLevel] = useState(1);
   const [checked, setChecked] = useState(false);
   const [showBackbiting, setShowBackbiting] = useState(false);
-  const [showThink, setShowThink] = useState(false);
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -97,6 +89,10 @@ export default function ReviewModal({ instructor, onClose, onSuccess }: Props) {
   const [availableTags, setAvailableTags]   = useState<{ id: string; label: string }[]>([]);
   const [selectedTagIds, setSelectedTagIds] = useState<string[]>([]);
   const [customTagInput, setCustomTagInput] = useState("");
+
+  const [showAddCourse, setShowAddCourse] = useState(false);
+const [newCourseCode, setNewCourseCode] = useState("");
+const [addingCourse, setAddingCourse]   = useState(false);
 
   useEffect(() => {
     async function init() {
@@ -173,6 +169,20 @@ export default function ReviewModal({ instructor, onClose, onSuccess }: Props) {
     setStep("success");
   }
 
+  async function handleAddCourse() {
+  if (!newCourseCode.trim()) return;
+  setAddingCourse(true);
+  const course = await addCourseToInstructor(instructor.id, newCourseCode);
+  setAddingCourse(false);
+  if (course) {
+    // Add to local instructor courses list
+    instructor.courses.push(course);
+    setCourseId(course.id);
+    setShowAddCourse(false);
+    setNewCourseCode("");
+  }
+}
+
   const ref = CONSCIENCE_LEVELS[conscienceLevel - 1];
   const isHighLevel = conscienceLevel <= 3;
   const canProceed = conscienceLevel <= 3 ? checked : true;
@@ -191,36 +201,39 @@ export default function ReviewModal({ instructor, onClose, onSuccess }: Props) {
       />
 
       {/* Modal */}
-      <motion.div
-        key="modal"
-        initial={{ opacity: 0, y: 20, scale: 0.97 }}
-        animate={{ opacity: 1, y: 0, scale: 1 }}
-        exit={{ opacity: 0, y: 20, scale: 0.97 }}
-        transition={{ duration: 0.28, ease: [0.15, 0.83, 0.66, 1] }}
-        className="fixed z-50 w-full flex items-center justify-center"
-style={{
-  maxWidth: "560px",
-  top: "5vh",
-  left: "50%",
-  transform: "translateX(-50%)",
-  maxHeight: "90vh",
-  overflowY: "auto",
-}}
-        onClick={(e) => e.stopPropagation()}
-      >
-        <div
-          className="rounded-xl overflow-hidden"
-          style={{
-            background: "var(--graph)",
-            border: "1px solid var(--hair2)",
-            boxShadow: "0 40px 100px rgba(0,0,0,0.7)",
-          }}
-        >
+  <motion.div
+  key="modal"
+  initial={{ opacity: 0, y: 20, scale: 0.97 }}
+  animate={{ opacity: 1, y: 0, scale: 1 }}
+  exit={{ opacity: 0, y: 20, scale: 0.97 }}
+  transition={{ duration: 0.28, ease: [0.15, 0.83, 0.66, 1] }}
+  className="fixed z-50 w-full"
+  style={{
+    maxWidth: "560px",
+    top: "4vh",
+    left: "50%",
+    transform: "translateX(-50%)",
+    maxHeight: "92vh",
+    display: "flex",
+    flexDirection: "column",
+  }}
+  onClick={(e) => e.stopPropagation()}
+>
+         <div
+    className="rounded-xl flex flex-col"
+    style={{
+      background: "var(--graph)",
+      border: "1px solid var(--hair2)",
+      boxShadow: "0 40px 100px rgba(0,0,0,0.7)",
+      maxHeight: "92vh",
+      overflow: "clip",
+    }}
+  >
           {/* Title bar */}
           <div
-            className="flex items-center gap-3 px-5 py-4 sticky top-0 z-10"
-            style={{ borderBottom: "1px solid var(--hair)", background: "var(--panel)" }}
-          >
+      className="flex items-center gap-3 px-5 py-4 flex-shrink-0"
+      style={{ borderBottom: "1px solid var(--hair)", background: "var(--panel)" }}
+    >
             <div className="flex gap-[5px]">
               {["#ff5f57", "#febc2e", "#28c840"].map((c) => (
                 <span key={c} className="w-[9px] h-[9px] rounded-full" style={{ background: c }} />
@@ -235,7 +248,7 @@ style={{
               <X size={14} />
             </button>
           </div>
-
+          <div style={{ overflowY: "auto", flex: 1 }}>
           {loading ? (
             <div className="px-6 py-12 text-center">
               <p className="font-mono text-[11px] tracking-widest" style={{ color: "var(--muted)" }}>LOADING...</p>
@@ -323,58 +336,8 @@ style={{
                     </label>
                   )}
 
-                  {/* THINK popover — level 1 only */}
-                  {ref.showThink && (
-                    <div className="mb-6">
-                      <button
-                        onClick={() => setShowThink(!showThink)}
-                        className="font-mono text-[10px] tracking-widest px-3 py-[5px] rounded"
-                        style={{
-                          color: "var(--muted)",
-                          border: "1px solid var(--hair2)",
-                          background: "transparent",
-                          cursor: "pointer",
-                          fontFamily: "inherit",
-                        }}
-                      >
-                        ? What is THINK
-                      </button>
-                      {showThink && (
-                        <motion.div
-                          initial={{ opacity: 0, y: -4 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          className="mt-3 rounded-lg px-4 py-4"
-                          style={{ background: "var(--void)", border: "1px solid var(--hair)" }}
-                        >
-                          <p className="text-[12px] leading-relaxed mb-3" style={{ color: "var(--fore)" }}>
-                            Before posting, ask yourself:
-                          </p>
-                          {[
-                            { letter: "T", word: "True", q: "Is this actually what I experienced?" },
-                            { letter: "H", word: "Helpful", q: "Would this help someone make a better decision?" },
-                            { letter: "I", word: "Specific", q: "Am I giving concrete details, not vague feelings?" },
-                            { letter: "N", word: "Necessary", q: "Does this add something useful?" },
-                            { letter: "K", word: "Kind", q: "Am I critiquing teaching, not the person?" },
-                          ].map(({ letter, word, q }) => (
-                            <div key={letter} className="flex gap-3 mb-2">
-                              <span className="font-mono text-[11px] font-bold w-4 flex-shrink-0" style={{ color: "var(--lumen-bright)" }}>
-                                {letter}
-                              </span>
-                              <span className="text-[12px]" style={{ color: "var(--fore)" }}>
-                                <strong style={{ color: "var(--lumen)" }}>{word}</strong> — {q}
-                              </span>
-                            </div>
-                          ))}
-                          <p className="text-[11px] mt-3 italic" style={{ color: "var(--muted)" }}>
-                            Negative reviews are welcome and needed — if they're true, specific, and helpful.
-                          </p>
-                        </motion.div>
-                      )}
-                    </div>
-                  )}
-
                   <button
-                    onClick={() => setStep("form")}
+                    onClick={handleSubmit}
                     disabled={!canProceed}
                     className="w-full rounded-lg py-3 text-[13px] font-semibold transition-opacity"
                     style={{
@@ -400,43 +363,83 @@ style={{
                   exit={{ opacity: 0 }}
                   className="px-6 py-8"
                 >
-                  <button
-                    onClick={() => setStep("conscience")}
-                    className="flex items-center gap-1 font-mono text-[10px] tracking-widest mb-6"
-                    style={{ color: "var(--muted)", background: "transparent", border: "none", cursor: "pointer", fontFamily: "inherit" }}
-                  >
-                    <ChevronLeft size={12} /> BACK
-                  </button>
+          
 
                   <div className="flex flex-col gap-6">
 
-                    {/* Course + Semester */}
-                    <div className="grid gap-3" style={{ gridTemplateColumns: "1fr 1fr 1fr" }}>
-                      <div className="flex flex-col gap-2" style={{ gridColumn: "1 / -1" }}>
-                        <FieldLabel>Course</FieldLabel>
-                        <select
-                          value={courseId}
-                          onChange={(e) => setCourseId(e.target.value)}
-                          style={selectStyle}
-                        >
-                          {instructor.courses.map((c) => (
-                            <option key={c.id} value={c.id}>{c.code}{c.name ? ` — ${c.name}` : ""}</option>
-                          ))}
-                        </select>
-                      </div>
-                      <div className="flex flex-col gap-2">
-                        <FieldLabel>Semester</FieldLabel>
-                        <select value={semester} onChange={(e) => setSemester(e.target.value)} style={selectStyle}>
-                          {SEMESTERS.map((s) => <option key={s}>{s}</option>)}
-                        </select>
-                      </div>
-                      <div className="flex flex-col gap-2" style={{ gridColumn: "2 / -1" }}>
-                        <FieldLabel>Year</FieldLabel>
-                        <select value={year} onChange={(e) => setYear(Number(e.target.value))} style={selectStyle}>
-                          {YEARS.map((y) => <option key={y}>{y}</option>)}
-                        </select>
-                      </div>
-                    </div>
+                   {/* Course + Semester */}
+<div className="flex flex-col gap-3">
+  <FieldLabel>Course</FieldLabel>
+  <select
+    value={courseId}
+    onChange={(e) => {
+      if (e.target.value === "__add__") {
+        setShowAddCourse(true);
+      } else {
+        setCourseId(e.target.value);
+        setShowAddCourse(false);
+      }
+    }}
+    style={selectStyle}
+  >
+    {instructor.courses.map((c) => (
+      <option key={c.id} value={c.id}>{c.code}{c.name ? ` — ${c.name}` : ""}</option>
+    ))}
+    <option value="__add__">+ Add a course…</option>
+  </select>
+
+  {showAddCourse && (
+    <motion.div
+      initial={{ opacity: 0, y: -4 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="flex gap-2"
+    >
+      <input
+        type="text"
+        placeholder="Course code e.g. CMPS 350"
+        value={newCourseCode}
+        onChange={(e) => setNewCourseCode(e.target.value.toUpperCase())}
+        className="flex-1 rounded-lg px-3 py-2 text-[13px] outline-none"
+        style={{
+          background: "var(--void)",
+          border: "1px solid var(--hair2)",
+          color: "var(--lumen-bright)",
+          fontFamily: "inherit",
+        }}
+      />
+      <button
+        onClick={handleAddCourse}
+        disabled={addingCourse || newCourseCode.length < 4}
+        className="font-mono text-[10px] px-3 py-2 rounded-lg"
+        style={{
+          background: "var(--lumen-bright)",
+          color: "var(--void)",
+          border: "none",
+          cursor: "pointer",
+          fontFamily: "inherit",
+          opacity: addingCourse || newCourseCode.length < 4 ? 0.5 : 1,
+        }}
+      >
+        {addingCourse ? "Adding…" : "Add"}
+      </button>
+    </motion.div>
+  )}
+</div>
+
+<div className="grid gap-3" style={{ gridTemplateColumns: "1fr 1fr" }}>
+  <div className="flex flex-col gap-2">
+    <FieldLabel>Semester</FieldLabel>
+    <select value={semester} onChange={(e) => setSemester(e.target.value)} style={selectStyle}>
+      {SEMESTERS.map((s) => <option key={s}>{s}</option>)}
+    </select>
+  </div>
+  <div className="flex flex-col gap-2">
+    <FieldLabel>Year</FieldLabel>
+    <select value={year} onChange={(e) => setYear(Number(e.target.value))} style={selectStyle}>
+      {YEARS.map((y) => <option key={y}>{y}</option>)}
+    </select>
+  </div>
+</div>
 
                     <Divider />
 
@@ -648,9 +651,9 @@ style={{
                       </div>
                     </div>
 
-                    {/* Grade (optional) */}
+                    {/* Course Feedback (optional) */}
                     <div className="flex flex-col gap-2">
-                      <FieldLabel>Grade Received <span style={{ color: "var(--muted)", fontWeight: 400 }}>— optional</span></FieldLabel>
+                      <FieldLabel>How did the course go? <span style={{ color: "var(--muted)", fontWeight: 400 }}>— optional</span></FieldLabel>
                       <p className="font-mono text-[10px]" style={{ color: "var(--muted)" }}>
                         Shown in aggregate only — never linked to your review.
                       </p>
@@ -671,20 +674,26 @@ style={{
                     )}
 
                     <button
-                      onClick={handleSubmit}
-                      disabled={submitting}
-                      className="w-full rounded-lg py-3 text-[13px] font-semibold transition-opacity mt-2"
-                      style={{
-                        background: "var(--lumen-bright)",
-                        color: "var(--void)",
-                        border: "none",
-                        cursor: submitting ? "not-allowed" : "pointer",
-                        opacity: submitting ? 0.6 : 1,
-                        fontFamily: "inherit",
-                      }}
-                    >
-                      {submitting ? "Submitting..." : "Submit review →"}
-                    </button>
+  onClick={() => {
+    if (!courseId || !teachingStyle || wouldRetake === null ||
+        strictAtt === null || affectsGrade === null || body.trim().length < 30) {
+      setError("Please complete all required fields.");
+      return;
+    }
+    setError(null);
+    setStep("conscience");
+  }}
+  className="w-full rounded-lg py-3 text-[13px] font-semibold transition-opacity mt-2"
+  style={{
+    background: "var(--lumen-bright)",
+    color: "var(--void)",
+    border: "none",
+    cursor: "pointer",
+    fontFamily: "inherit",
+  }}
+>
+  Review & submit →
+</button>
                   </div>
                 </motion.div>
               )}
@@ -729,6 +738,7 @@ style={{
 
             </AnimatePresence>
           )}
+          </div>
         </div>
       </motion.div>
     </AnimatePresence>
