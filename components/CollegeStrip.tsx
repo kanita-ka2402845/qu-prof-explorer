@@ -77,8 +77,8 @@ export default function CollegeStrip({ selectedId, onSelect }: Props) {
                   layoutId="college-underline"
                   className="absolute bottom-0 left-0 right-0 h-[1px]"
                   style={{
-                    background: "var(--lumen-bright)",
-                    boxShadow: "0 0 6px var(--lumen)",
+                    background: "var(--accent-bright)",
+                    boxShadow: "0 0 6px var(--accent)",
                   }}
                 />
               )}

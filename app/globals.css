@@ -8,23 +8,141 @@
 @import "@fontsource/space-mono/700.css";
 
 :root {
-  /* Lumen Edge palette */
-  --void:         #0b0c0e; /* Deep background canvas */
-  --graph:        #121417; /* Secondary container / subtle grid background */
-  --panel:        #181a1e; /* Card base surface */
-  --slate:        #2b303a; /* Interactive/hover state background */
-  
-  /* Text & Content Tokens */
-  --muted:        #5a6170; /* Captions, micro-labels, metadata */
-  --fore:         #8d94a5; /* Secondary body text */
-  --lumen:        #c8d2e6; /* Primary body text / headings */
-  --lumen-bright: #f0f4fc; /* High-contrast titles & emphasis */
+  /* =========================================================
+     LUMEN EDGE — CORE PALETTE
+     ========================================================= */
 
-  /* Borders & Inset Rims */
-  --hair:         rgba(255, 255, 255, 0.07); /* Standard card borders */
-  --hair2:        rgba(255, 255, 255, 0.14); /* Subtle hover / active borders */
-  --horizon: linear-gradient(90deg, transparent 0%, rgba(107, 122, 148, 0.2) 20%, rgba(200, 215, 240, 0.7) 50%, rgba(107, 122, 148, 0.2) 80%, transparent 100%);
-  --radial-glow: radial-gradient(ellipse 90% 60% at 50% 115%, rgba(154, 170, 200, 0.12) 0%, transparent 75%);
+  /* Background hierarchy */
+  --void:          #0d0f12;
+  --graph:         #13161b;
+  --panel:         #181c22;
+  --slate:         #252b34;
+
+  /* =========================================================
+     SURFACE / BORDER
+     ========================================================= */
+
+  /* Extremely subtle borders — important to the Lumen Edge look */
+  --hair:          rgba(255, 255, 255, 0.055);
+  --hair2:         rgba(255, 255, 255, 0.095);
+  --hair3:         rgba(255, 255, 255, 0.14);
+
+  /* =========================================================
+     TYPOGRAPHY
+     ========================================================= */
+
+  /* Primary body / secondary UI */
+  --muted:         #666e7d;
+
+  /* Secondary text */
+  --fore:          #9da5b4;
+
+  /* Primary text */
+  --lumen:         #d1d7e2;
+
+  /* Headings / high emphasis */
+  --lumen-bright:  #f0f2f6;
+
+  /* =========================================================
+     LUMEN / BLUE-GRAY ACCENT
+     ========================================================= */
+
+  /* Main desaturated blue-gray */
+  --accent:        #aebbd0;
+
+  /* Brighter version for active states */
+  --accent-bright: #d3dceb;
+
+  /* Dim version for subtle UI */
+  --accent-dim:    #6f7e95;
+
+  --rim-inset: inset 0 1px 0 0 rgba(255, 255, 255, 0.1);
+--transition: all 300ms var(--ease-lumen); 
+
+  /* =========================================================
+     HORIZON
+     ========================================================= */
+
+  /*
+    The signature Lumen Edge line.
+    Almost invisible at the edges,
+    brightest around the center.
+  */
+
+  --horizon: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(108, 124, 148, 0.08) 15%,
+    rgba(137, 153, 178, 0.20) 32%,
+    rgba(174, 189, 215, 0.42) 50%,
+    rgba(137, 153, 178, 0.20) 68%,
+    rgba(108, 124, 148, 0.08) 85%,
+    transparent 100%
+  );
+
+  /* =========================================================
+     RADIAL SURFACE LIGHT
+     ========================================================= */
+
+  /*
+    Used underneath cards/panels.
+    The reference has a very soft "light from below"
+    rather than a conventional shadow.
+  */
+
+  --radial-glow: radial-gradient(
+    ellipse 80% 65% at 50% 115%,
+    rgba(139, 158, 188, 0.14) 0%,
+    rgba(113, 130, 157, 0.07) 38%,
+    transparent 72%
+  );
+
+  /* Stronger version for featured cards */
+  --radial-glow-strong: radial-gradient(
+    ellipse 85% 70% at 50% 120%,
+    rgba(147, 168, 202, 0.20) 0%,
+    rgba(114, 134, 163, 0.09) 42%,
+    transparent 74%
+  );
+
+  /* =========================================================
+     BACKGROUND GRID
+     ========================================================= */
+
+  --grid-line: rgba(255, 255, 255, 0.025);
+
+  --grid-size: 48px;
+
+  /* =========================================================
+     SHADOWS
+     ========================================================= */
+
+  /*
+    Not a heavy black drop-shadow.
+    Panels should feel like they are sitting in darkness.
+  */
+
+  --shadow-card:
+    0 18px 40px rgba(0, 0, 0, 0.20),
+    0 2px 8px rgba(0, 0, 0, 0.16);
+
+  --shadow-floating:
+    0 24px 60px rgba(0, 0, 0, 0.28),
+    0 4px 14px rgba(0, 0, 0, 0.18);
+
+  /* =========================================================
+     RADIUS
+     ========================================================= */
+
+  --radius-sm: 7px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+
+  /* =========================================================
+     MOTION
+     ========================================================= */
+
+  --ease-lumen: cubic-bezier(0.15, 0.83, 0.66, 1);
 }
 * { box-sizing: border-box; }
 

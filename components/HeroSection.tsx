@@ -55,6 +55,7 @@ export default function HeroSection({ onDiveIn }: Props) {
               style={{
                 background: "var(--lumen-bright)",
                 color: "var(--void)",
+                boxShadow: "var(--rim-inset)",
                 fontFamily: "inherit",
               }}
             >

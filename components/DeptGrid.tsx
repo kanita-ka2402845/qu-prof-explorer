@@ -65,6 +65,7 @@ export default function DeptGrid({ collegeSlug, selectedDeptId, onSelect }: Prop
               className="text-left p-5 transition-all duration-200 relative"
               style={{
                 background: isSel ? "var(--panel)" : "var(--graph)",
+                boxShadow: isSel ? "var(--rim-inset)" : "none",
                 fontFamily: "inherit",
                 cursor: "pointer",
               }}
@@ -87,15 +88,15 @@ export default function DeptGrid({ collegeSlug, selectedDeptId, onSelect }: Prop
                 <div
                   className="absolute bottom-0 left-0 right-0 h-[1px]"
                   style={{
-                    background: "linear-gradient(90deg, transparent, rgba(200,208,224,0.45), transparent)",
+                    background: "linear-gradient(90deg, transparent, var(--accent-bright), transparent)",
                   }}
                 />
               )}
               <div
                 className="w-[5px] h-[5px] rounded-full mb-3"
                 style={{
-                  background: isSel ? "var(--lumen)" : "var(--muted)",
-                  boxShadow: isSel ? "0 0 6px var(--lumen)" : "none",
+                  background: isSel ? "var(--accent)" : "var(--muted)",
+                  boxShadow: isSel ? "0 0 6px var(--accent)" : "none",
                   transition: "all 0.2s",
                 }}
               />

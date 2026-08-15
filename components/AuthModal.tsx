@@ -65,7 +65,7 @@ export default function AuthModal({ onClose, onSuccess }: Props) {
           style={{
             background: "var(--graph)",
             border: "1px solid var(--hair2)",
-            boxShadow: "0 32px 80px rgba(0,0,0,0.6)",
+            boxShadow: "var(--rim-inset), var(--shadow-floating)",
           }}
         >
           {/* Title bar */}
@@ -154,6 +154,7 @@ export default function AuthModal({ onClose, onSuccess }: Props) {
                       background: "var(--lumen-bright)",
                       color: "var(--void)",
                       border: "none",
+                      boxShadow: "var(--rim-inset)",
                       cursor: loading ? "not-allowed" : "pointer",
                       opacity: loading || !email.includes("@") ? 0.5 : 1,
                       fontFamily: "inherit",
@@ -230,6 +231,7 @@ export default function AuthModal({ onClose, onSuccess }: Props) {
                       background: "var(--lumen-bright)",
                       color: "var(--void)",
                       border: "none",
+                      boxShadow: "var(--rim-inset)",
                       cursor: loading ? "not-allowed" : "pointer",
                       opacity: loading || otp.length < 8 ? 0.5 : 1,
                       fontFamily: "inherit",

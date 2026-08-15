@@ -48,7 +48,11 @@ export default function InstructorWindow({ departmentId, departmentName, college
     >
       <div
         className="rounded-xl overflow-hidden relative"
-        style={{ background: "var(--graph)", border: "1px solid var(--hair2)" }}
+        style={{
+          background: "var(--graph)",
+          border: "1px solid var(--hair2)",
+          boxShadow: "var(--rim-inset), var(--shadow-card)",
+        }}
       >
         <div
           className="absolute bottom-0 left-0 right-0 h-[1px] pointer-events-none"

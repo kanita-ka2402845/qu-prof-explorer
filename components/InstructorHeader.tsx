@@ -126,7 +126,7 @@ export default function InstructorHeader({ instructor: inst }: Props) {
 
       {/* Grade aggregate — only shown if any grades reported */}
       {gradeTotal > 0 && (
-        <div className="mt-4 px-4 py-4 rounded-lg" style={{ background: "var(--graph)", border: "1px solid var(--hair)" }}>
+        <div className="mt-4 px-4 py-4 rounded-lg" style={{ background: "var(--graph)", border: "1px solid var(--hair)", boxShadow: "var(--shadow-card)" }}>
           <p className="font-mono text-[10px] uppercase tracking-widest mb-3" style={{ color: "var(--muted)" }}>
             Grade distribution · {gradeTotal} reported · shown in aggregate only
           </p>

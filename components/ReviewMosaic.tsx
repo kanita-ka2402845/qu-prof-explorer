@@ -90,6 +90,7 @@ export default function ReviewMosaic({ reviews, instructorId, onWriteReview }: P
               background: "var(--lumen-bright)",
               color: "var(--void)",
               border: "none",
+              boxShadow: "var(--rim-inset)",
               cursor: "pointer",
               fontFamily: "inherit",
             }}
@@ -129,6 +130,7 @@ export default function ReviewMosaic({ reviews, instructorId, onWriteReview }: P
                 background: "var(--lumen-bright)",
                 color: "var(--void)",
                 border: "none",
+                boxShadow: "var(--rim-inset)",
                 cursor: "pointer",
                 fontFamily: "inherit",
               }}
@@ -174,6 +176,7 @@ function ReviewCard({ review, idx, voted, helpfulCount, onVote }: CardProps) {
         breakInside: "avoid",
         position: "relative",
         overflow: "hidden",
+        boxShadow: "var(--rim-inset), var(--shadow-card)",
       }}
     >
       <div style={{ position: "absolute", inset: 0, pointerEvents: "none", background: "var(--radial-glow)", opacity: 0.6 }} />
@@ -242,9 +245,9 @@ function ReviewCard({ review, idx, voted, helpfulCount, onVote }: CardProps) {
           onClick={onVote}
           className="flex items-center gap-1 font-mono text-[10px] tracking-widest transition-all px-2 py-1 rounded"
           style={{
-            background: voted ? "rgba(232,237,245,0.08)" : "transparent",
-            border: `1px solid ${voted ? "rgba(232,237,245,0.3)" : "transparent"}`,
-            color: voted ? "var(--lumen-bright)" : "var(--muted)",
+            background: voted ? "rgba(174,187,208,0.12)" : "transparent",
+            border: `1px solid ${voted ? "rgba(174,187,208,0.4)" : "transparent"}`,
+            color: voted ? "var(--accent-bright)" : "var(--muted)",
             cursor: "pointer",
             fontFamily: "inherit",
           }}
@@ -285,7 +288,7 @@ function ThinkButton() {
           className="absolute right-0 mt-2 rounded-lg px-4 py-4 z-20"
           style={{
             background: "var(--panel)", border: "1px solid var(--hair2)",
-            boxShadow: "0 16px 40px rgba(0,0,0,0.5)", width: "280px",
+            boxShadow: "var(--rim-inset), var(--shadow-floating)", width: "280px",
           }}
         >
           <p className="text-[12px] leading-relaxed mb-3" style={{ color: "var(--fore)" }}>

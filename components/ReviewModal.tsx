@@ -1,7 +1,6 @@
 "use client";
 import { useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { X, ChevronLeft } from "lucide-react";
 import { useAuth } from "@/components/AuthContext";
 import type { FullInstructor } from "@/app/professors/[slug]/page";
 
@@ -224,7 +223,7 @@ const [addingCourse, setAddingCourse]   = useState(false);
     style={{
       background: "var(--graph)",
       border: "1px solid var(--hair2)",
-      boxShadow: "0 40px 100px rgba(0,0,0,0.7)",
+      boxShadow: "var(--rim-inset), var(--shadow-floating)",
       maxHeight: "92vh",
       overflow: "clip",
     }}
@@ -344,6 +343,7 @@ const [addingCourse, setAddingCourse]   = useState(false);
                       background: "var(--lumen-bright)",
                       color: "var(--void)",
                       border: "none",
+                      boxShadow: "var(--rim-inset)",
                       cursor: canProceed ? "pointer" : "not-allowed",
                       opacity: canProceed ? 1 : 0.4,
                       fontFamily: "inherit",
@@ -688,6 +688,7 @@ const [addingCourse, setAddingCourse]   = useState(false);
     background: "var(--lumen-bright)",
     color: "var(--void)",
     border: "none",
+    boxShadow: "var(--rim-inset)",
     cursor: "pointer",
     fontFamily: "inherit",
   }}
@@ -727,6 +728,7 @@ const [addingCourse, setAddingCourse]   = useState(false);
                       background: "var(--lumen-bright)",
                       color: "var(--void)",
                       border: "none",
+                      boxShadow: "var(--rim-inset)",
                       cursor: "pointer",
                       fontFamily: "inherit",
                     }}

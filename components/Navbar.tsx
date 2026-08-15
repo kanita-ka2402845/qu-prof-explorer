@@ -17,8 +17,8 @@ export default function Navbar() {
         <span
           className="w-[7px] h-[7px] rounded-full"
           style={{
-            background: "var(--lumen)",
-            boxShadow: "0 0 8px 2px rgba(154,170,200,0.5)",
+            background: "var(--accent)",
+            boxShadow: "0 0 8px 2px rgba(174,187,208,0.5)",
           }}
         />
         <span
