@@ -9,6 +9,7 @@ import ProfileHero from "@/components/profile/ProfileHero";
 import ReviewTabs from "@/components/profile/ReviewTabs";
 import AwardsModal from "@/components/profile/AwardsModal";
 import LeaderboardModal from "@/components/profile/LeaderboardModal";
+import Link from "next/link";
 
 export default function ProfilePage() {
   const { session } = useAuth();
@@ -47,7 +48,11 @@ export default function ProfilePage() {
 
   return (
     <main className="min-h-screen pb-24" style={{ background: "var(--void)" }}>
-      <div className="mx-auto max-w-2xl px-4 pt-10 space-y-6">
+       <div className="mx-auto max-w-2xl px-4 pt-10 space-y-6">
+        <Link href="/" className="inline-flex items-center gap-2 font-mono text-[11px] tracking-widest uppercase transition-colors" style={{ color: "var(--muted)" }} onMouseEnter={(e) => (e.currentTarget.style.color = "var(--lumen-bright)")} onMouseLeave={(e) => (e.currentTarget.style.color = "var(--muted)")}>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="15 18 9 12 15 6"/></svg>
+          Home
+        </Link>
         <ProfileHero
           profile={profile}
           onProfileUpdate={(updated) => setProfile((p) => p ? { ...p, ...updated } : p)}
@@ -60,7 +65,7 @@ export default function ProfilePage() {
       <AwardsModal
         open={awardsOpen}
         onClose={() => setAwardsOpen(false)}
-        earnedBadges={profile.badges}
+        earnedAwards={profile.awards}
       />
       <LeaderboardModal
         open={leaderboardOpen}

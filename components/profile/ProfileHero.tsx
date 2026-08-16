@@ -3,9 +3,9 @@
 import { useState } from "react";
 import { updateUsername } from "@/lib/queries";
 import { useAuth } from "@/components/AuthContext";
-import type { ProfileFull, BadgeId } from "@/lib/queries";
+import type { ProfileFull, AwardId } from "@/lib/queries";
 
-const BADGE_META: Record<BadgeId, { label: string; icon: React.ReactNode }> = {
+const AWARD_META: Record<AwardId, { label: string; icon: React.ReactNode }> = {
   first_voice: {
     label: "First Voice",
     icon: <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>,
@@ -153,7 +153,7 @@ export default function ProfileHero({ profile, onProfileUpdate, onAwardsClick, o
         {[
           { label: "Reviews", value: profile.review_count },
           { label: "Liked", value: profile.liked_count },
-          { label: "Badges", value: profile.badges.length },
+           {label: "Awards", value: profile.awards.length },
         ].map(({ label, value }) => (
           <div key={label} className="px-4 py-3" style={{ background: "var(--graph)" }}>
             <div className="font-mono text-[10px] uppercase tracking-widest mb-1" style={{ color: "var(--muted)" }}>{label}</div>
@@ -163,10 +163,10 @@ export default function ProfileHero({ profile, onProfileUpdate, onAwardsClick, o
       </div>
 
       {/* Earned badge pills */}
-      {profile.badges.length > 0 && (
+      {profile.awards.length > 0 && (
         <div className="flex flex-wrap gap-2 mt-4">
-          {profile.badges.map((id) => {
-            const meta = BADGE_META[id];
+          {profile.awards.map((id) => {
+            const meta = AWARD_META[id];
             if (!meta) return null;
             return (
               <span

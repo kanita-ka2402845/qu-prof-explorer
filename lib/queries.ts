@@ -152,7 +152,7 @@ export async function getProfile(userId: string): Promise<{ username: string } |
   return data;
 }
 
-export type BadgeId =
+export type AwardId =
   | "first_voice"
   | "precise"
   | "top_10"
@@ -171,7 +171,7 @@ export type ProfileFull = {
   show_on_leaderboard: boolean;
   created_at: string;
   liked_count: number;
-  badges: BadgeId[];
+    awards: AwardId[];
   rank: number;
 };
 
@@ -203,7 +203,7 @@ export async function getFullProfile(userId: string): Promise<ProfileFull | null
   return {
     ...profileRes.data,
     liked_count: likedRes.count ?? 0,
-    badges: (badgesRes.data ?? []).map((b) => b.badge_id as BadgeId),
+   awards: (badgesRes.data ?? []).map((b) => b.badge_id as AwardId),
     rank: (aboveCount ?? 0) + 1,
   };
 }
