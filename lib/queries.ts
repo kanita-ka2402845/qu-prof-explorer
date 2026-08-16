@@ -142,3 +142,128 @@ export async function getUserVotes(userId: string): Promise<string[]> {
     .eq("voter_id", userId);
   return data?.map((v) => v.review_id) ?? [];
 }
+
+export async function getProfile(userId: string): Promise<{ username: string } | null> {
+  const { data } = await supabase
+    .from("profiles")
+    .select("username")
+    .eq("id", userId)
+    .single();
+  return data;
+}
+
+export type BadgeId =
+  | "first_voice"
+  | "precise"
+  | "top_10"
+  | "top_5"
+  | "top_3"
+  | "reviews_10"
+  | "reviews_15";
+
+export type ProfileFull = {
+  id: string;
+  username: string;
+  qu_email: string;
+  review_count: number;
+  helpful_votes_received: number;
+  contribution_score: number;
+  show_on_leaderboard: boolean;
+  created_at: string;
+  liked_count: number;
+  badges: BadgeId[];
+  rank: number;
+};
+
+export type LeaderboardEntry = {
+  username: string;
+  review_count: number;
+  contribution_score: number;
+  rank: number;
+};
+
+export async function getFullProfile(userId: string): Promise<ProfileFull | null> {
+  const [profileRes, likedRes, badgesRes, rankRes] = await Promise.all([
+    supabase.from("profiles").select("*").eq("id", userId).single(),
+    supabase.from("helpful_votes").select("id", { count: "exact", head: true }).eq("voter_id", userId),
+    supabase.from("badges").select("badge_id").eq("user_id", userId),
+    supabase.from("profiles").select("id", { count: "exact", head: true }).gt("contribution_score",
+      supabase.from("profiles").select("contribution_score").eq("id", userId).single()
+    ),
+  ]);
+
+  if (profileRes.error || !profileRes.data) return null;
+
+  // rank = number of users with higher score + 1
+  const { count: aboveCount } = await supabase
+    .from("profiles")
+    .select("id", { count: "exact", head: true })
+    .gt("contribution_score", profileRes.data.contribution_score);
+
+  return {
+    ...profileRes.data,
+    liked_count: likedRes.count ?? 0,
+    badges: (badgesRes.data ?? []).map((b) => b.badge_id as BadgeId),
+    rank: (aboveCount ?? 0) + 1,
+  };
+}
+
+export async function updateUsername(userId: string, username: string): Promise<{ error: string | null }> {
+  const { error } = await supabase
+    .from("profiles")
+    .update({ username })
+    .eq("id", userId);
+  return { error: error?.message ?? null };
+}
+
+export async function toggleLeaderboard(userId: string, show: boolean): Promise<{ error: string | null }> {
+  const { error } = await supabase
+    .from("profiles")
+    .update({ show_on_leaderboard: show })
+    .eq("id", userId);
+  return { error: error?.message ?? null };
+}
+
+export async function getLeaderboard(): Promise<LeaderboardEntry[]> {
+  const { data, error } = await supabase
+    .from("profiles")
+    .select("username, review_count, contribution_score")
+    .eq("show_on_leaderboard", true)
+    .order("contribution_score", { ascending: false })
+    .limit(50);
+
+  if (error || !data) return [];
+
+  return data.map((entry, i) => ({ ...entry, rank: i + 1 }));
+}
+
+export async function getUserReviews(userId: string) {
+  const { data } = await supabase
+    .from("reviews")
+    .select(`
+      id, body, clarity, exam_difficulty, would_retake,
+      semester, semester_year, created_at, helpful_count,
+      instructors(id, full_name, slug),
+      courses(id, code, name)
+    `)
+    .eq("author_id", userId)
+    .order("created_at", { ascending: false });
+  return data ?? [];
+}
+
+export async function getLikedReviews(userId: string) {
+  const { data } = await supabase
+    .from("helpful_votes")
+    .select(`
+      review_id,
+      reviews(
+        id, body, clarity, exam_difficulty, would_retake,
+        semester, semester_year, created_at, helpful_count,
+        instructors(id, full_name, slug),
+        courses(id, code, name)
+      )
+    `)
+    .eq("voter_id", userId)
+    .order("created_at", { ascending: false });
+  return (data ?? []).map((v) => v.reviews).filter(Boolean);
+}

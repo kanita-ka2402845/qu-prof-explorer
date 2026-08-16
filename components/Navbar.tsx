@@ -2,10 +2,22 @@
 import { useAuth } from "@/components/AuthContext";
 import { signOut } from "@/lib/auth";
 import { useRouter } from "next/navigation";
+import { getProfile } from "@/lib/queries";
+import {useState, useEffect} from "react";
+import Link from "next/link";
 
 export default function Navbar() {
   const { session } = useAuth();
   const router = useRouter();
+  const [username, setUsername] = useState<string | null>(null);
+
+useEffect(() => {
+  if (session?.user?.id) {
+    getProfile(session.user.id).then((p) => {
+      if (p?.username) setUsername(p.username);
+    });
+  }
+}, [session]);
 
   return (
     <nav
@@ -46,12 +58,15 @@ export default function Navbar() {
                 className="w-[5px] h-[5px] rounded-full"
                 style={{ background: "#4ade80", boxShadow: "0 0 5px rgba(74,222,128,0.6)" }}
               />
-              <span
-                className="font-mono text-[10px] tracking-widest"
-                style={{ color: "var(--muted)" }}
-              >
-                {session.user.email?.split('@')[0].toUpperCase()}
-              </span>
+              <Link
+  href="/profile"
+  className="font-mono text-[10px] tracking-widest transition-colors"
+  style={{ color: "var(--muted)" }}
+  onMouseEnter={(e) => (e.currentTarget.style.color = "var(--lumen)")}
+  onMouseLeave={(e) => (e.currentTarget.style.color = "var(--muted)")}
+>
+  {username ?? session.user.email?.split('@')[0].toUpperCase()}
+</Link>
             </div>
             <button
               onClick={async () => { await signOut(); router.refresh(); }}
