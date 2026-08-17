@@ -6,7 +6,7 @@ type Props = { onDiveIn: () => void };
 export default function HeroSection({ onDiveIn }: Props) {
   return (
     <section
-      className="grid grid-cols-1 md:grid-cols-2 min-h-[340px]"
+      className="grid grid-cols-1 md:grid-cols-2"
       style={{
         borderBottom: "1px solid var(--hair)",
       }}
@@ -90,8 +90,8 @@ export default function HeroSection({ onDiveIn }: Props) {
         </div>
       </div>
 
-      {/* RIGHT — full dot grid */}
-      <div className="relative h-[300px] md:h-auto min-h-[300px]">
+      {/* RIGHT — Hidden on mobile, rendered on desktop */}
+      <div className="hidden md:block relative min-h-[340px]">
         <DotGrid />
       </div>
     </section>
