@@ -24,7 +24,7 @@ export default function DeptGrid({ collegeSlug, selectedDeptId, onSelect }: Prop
 
   if (loading) return (
     <div
-      className="px-8 py-5 font-mono text-[10px] tracking-widest"
+      className="px-4 sm:px-8 py-5 font-mono text-[10px] tracking-widest"
       style={{ color: "var(--muted)", borderBottom: "1px solid var(--hair)" }}
     >
       LOADING DEPARTMENTS...
@@ -38,7 +38,7 @@ export default function DeptGrid({ collegeSlug, selectedDeptId, onSelect }: Prop
       transition={{ duration: 0.35, ease: [0.15, 0.83, 0.66, 1] }}
       style={{ borderBottom: "1px solid var(--hair)" }}
     >
-      <div className="flex items-baseline gap-3 px-8 pt-6 pb-4">
+      <div className="flex items-baseline gap-3 px-4 sm:px-8 pt-6 pb-4">
         <span
           className="font-mono text-[10px] tracking-[0.12em] uppercase"
           style={{ color: "var(--muted)" }}
@@ -48,10 +48,8 @@ export default function DeptGrid({ collegeSlug, selectedDeptId, onSelect }: Prop
       </div>
 
       <div
+        className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-[1px]"
         style={{
-          display: "grid",
-          gridTemplateColumns: `repeat(${depts.length}, 1fr)`,
-          gap: "1px",
           background: "var(--hair)",
           borderTop: "1px solid var(--hair)",
         }}
@@ -62,7 +60,7 @@ export default function DeptGrid({ collegeSlug, selectedDeptId, onSelect }: Prop
             <button
               key={dept.id}
               onClick={() => onSelect(dept.id, dept.name)}
-              className="text-left p-5 transition-all duration-200 relative"
+              className="text-left p-4 sm:p-5 transition-all duration-200 relative"
               style={{
                 background: isSel ? "var(--panel)" : "var(--graph)",
                 boxShadow: isSel ? "var(--rim-inset)" : "none",

@@ -6,17 +6,15 @@ type Props = { onDiveIn: () => void };
 export default function HeroSection({ onDiveIn }: Props) {
   return (
     <section
-      className="grid"
+      className="grid grid-cols-1 md:grid-cols-2 min-h-[340px]"
       style={{
-        gridTemplateColumns: "1fr 1fr",
-        minHeight: "340px",
         borderBottom: "1px solid var(--hair)",
       }}
     >
       {/* LEFT */}
       <div
-        className="flex flex-col justify-between p-10"
-        style={{ borderRight: "1px solid var(--hair)" }}
+        className="flex flex-col justify-between p-6 sm:p-10 border-b md:border-b-0 md:border-r"
+        style={{ borderColor: "var(--hair)" }}
       >
         <div>
           <p
@@ -30,7 +28,7 @@ export default function HeroSection({ onDiveIn }: Props) {
             className="font-bold leading-[1.02] tracking-[-0.03em]"
             style={{ fontSize: "clamp(30px,4vw,46px)", color: "var(--lumen-bright)" }}
           >
-            Interfaces that<br />
+            Interfaces that<br className="hidden sm:inline" />
             read as{" "}
             <span className="font-light italic" style={{ color: "var(--fore)" }}>
               honest.
@@ -38,7 +36,7 @@ export default function HeroSection({ onDiveIn }: Props) {
           </h1>
 
           <p
-            className="mt-4 text-sm leading-[1.75] max-w-[340px]"
+            className="mt-4 text-xs sm:text-sm leading-[1.75] max-w-[340px]"
             style={{ color: "var(--fore)" }}
           >
             Instructor reviews written by students who showed up.{" "}
@@ -66,7 +64,7 @@ export default function HeroSection({ onDiveIn }: Props) {
 
         {/* Metrics */}
         <div
-          className="flex gap-7 mt-6 pt-6"
+          className="flex gap-5 sm:gap-7 mt-6 pt-6"
           style={{ borderTop: "1px solid var(--hair)" }}
         >
           {[
@@ -92,8 +90,8 @@ export default function HeroSection({ onDiveIn }: Props) {
         </div>
       </div>
 
-      {/* RIGHT — full dot grid, no padding, no border-radius crop */}
-      <div style={{ position: "relative", minHeight: "340px" }}>
+      {/* RIGHT — full dot grid */}
+      <div className="relative h-[300px] md:h-auto min-h-[300px]">
         <DotGrid />
       </div>
     </section>

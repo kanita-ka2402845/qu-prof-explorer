@@ -44,7 +44,7 @@ export default function InstructorWindow({ departmentId, departmentName, college
       initial={{ opacity: 0, y: -6 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.35, ease: [0.15, 0.83, 0.66, 1] }}
-      className="px-8 py-7"
+      className="px-4 sm:px-8 py-5 sm:py-7"
     >
       <div
         className="rounded-xl overflow-hidden relative"
@@ -61,7 +61,7 @@ export default function InstructorWindow({ departmentId, departmentName, college
 
         {/* Title bar */}
         <div
-          className="flex items-center gap-3 px-4 py-3"
+          className="flex flex-wrap items-center justify-between gap-2 px-4 py-3"
           style={{ borderBottom: "1px solid var(--hair)", background: "var(--panel)" }}
         >
           <div className="flex gap-[5px]">
@@ -70,13 +70,13 @@ export default function InstructorWindow({ departmentId, departmentName, college
             ))}
           </div>
           <span
-            className="font-mono text-[11px] tracking-[0.06em] mx-auto"
+            className="font-mono text-[10px] sm:text-[11px] tracking-[0.06em] text-center truncate max-w-[200px] sm:max-w-none"
             style={{ color: "var(--muted)" }}
           >
             {collegeName.toUpperCase()} / {departmentName.toUpperCase()}
           </span>
           <span
-            className="font-mono text-[10px] px-2 py-[2px] rounded"
+            className="font-mono text-[10px] px-2 py-[2px] rounded shrink-0"
             style={{ color: "var(--muted)", border: "1px solid var(--hair2)" }}
           >
             {instructors.length} instructors
@@ -100,7 +100,7 @@ export default function InstructorWindow({ departmentId, departmentName, college
         </div>
 
         {/* List */}
-        <div style={{ maxHeight: "280px", overflowY: "auto" }}>
+        <div style={{ maxHeight: "320px", overflowY: "auto" }}>
           {loading ? (
             <p className="font-mono text-[11px] text-center py-10" style={{ color: "var(--muted)" }}>
               LOADING...
@@ -113,10 +113,8 @@ export default function InstructorWindow({ departmentId, departmentName, college
             filtered.map((inst, idx) => (
               <div
                 key={inst.id}
-                className="grid items-center px-4 py-3 transition-colors duration-100"
+                className="flex flex-col sm:flex-row sm:items-center justify-between px-4 py-3 gap-3 transition-colors duration-100"
                 style={{
-                  gridTemplateColumns: "1fr auto auto",
-                  gap: "16px",
                   borderBottom: idx < filtered.length - 1 ? "1px solid var(--hair)" : "none",
                   cursor: "pointer",
                 }}
@@ -132,33 +130,34 @@ export default function InstructorWindow({ departmentId, departmentName, college
                   </p>
                 </div>
 
-                <span className="font-mono text-[12px]" style={{ color: "var(--fore)" }}>
-                  {inst.signal_strength > 0 ? `${inst.signal_strength.toFixed(1)} signal` : "—"}
-                </span>
+                <div className="flex items-center justify-between sm:justify-end gap-4 shrink-0">
+                  <span className="font-mono text-[12px]" style={{ color: "var(--fore)" }}>
+                    {inst.signal_strength > 0 ? `${inst.signal_strength.toFixed(1)} signal` : "—"}
+                  </span>
 
-                <button
-                  className="font-mono text-[10px] px-3 py-[4px] rounded uppercase tracking-[0.04em] transition-all duration-150"
-                  style={{
-                    color: "var(--muted)",
-                    border: "1px solid var(--hair2)",
-                    background: "transparent",
-                    fontFamily: "inherit",
-                    cursor: "pointer",
-                    whiteSpace: "nowrap",
-                  }}
-                  onMouseEnter={(e) => {
-                    (e.currentTarget as HTMLButtonElement).style.color = "var(--lumen-bright)";
-                    (e.currentTarget as HTMLButtonElement).style.borderColor = "rgba(255,255,255,0.28)";
-                  }}
-                  onMouseLeave={(e) => {
-                    (e.currentTarget as HTMLButtonElement).style.color = "var(--muted)";
-                    (e.currentTarget as HTMLButtonElement).style.borderColor = "var(--hair2)";
-                  }}
-
-                  onClick={() => router.push(`/professors/${inst.slug}?college=${encodeURIComponent(collegeSlug)}&dept=${encodeURIComponent(departmentId)}&collegeName=${encodeURIComponent(collegeName)}&deptName=${encodeURIComponent(departmentName)}`)}
-                >
-                  View ↗
-                </button>
+                  <button
+                    className="font-mono text-[10px] px-3 py-[4px] rounded uppercase tracking-[0.04em] transition-all duration-150"
+                    style={{
+                      color: "var(--muted)",
+                      border: "1px solid var(--hair2)",
+                      background: "transparent",
+                      fontFamily: "inherit",
+                      cursor: "pointer",
+                      whiteSpace: "nowrap",
+                    }}
+                    onMouseEnter={(e) => {
+                      (e.currentTarget as HTMLButtonElement).style.color = "var(--lumen-bright)";
+                      (e.currentTarget as HTMLButtonElement).style.borderColor = "rgba(255,255,255,0.28)";
+                    }}
+                    onMouseLeave={(e) => {
+                      (e.currentTarget as HTMLButtonElement).style.color = "var(--muted)";
+                      (e.currentTarget as HTMLButtonElement).style.borderColor = "var(--hair2)";
+                    }}
+                    onClick={() => router.push(`/professors/${inst.slug}?college=${encodeURIComponent(collegeSlug)}&dept=${encodeURIComponent(departmentId)}&collegeName=${encodeURIComponent(collegeName)}&deptName=${encodeURIComponent(departmentName)}`)}
+                  >
+                    View ↗
+                  </button>
+                </div>
               </div>
             ))
           )}

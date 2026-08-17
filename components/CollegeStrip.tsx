@@ -22,7 +22,7 @@ export default function CollegeStrip({ selectedId, onSelect }: Props) {
 
   if (loading) return (
     <div
-      className="px-8 py-5 font-mono text-[10px] tracking-widest"
+      className="px-4 sm:px-8 py-5 font-mono text-[10px] tracking-widest"
       style={{ color: "var(--muted)", borderBottom: "1px solid var(--hair)" }}
     >
       LOADING COLLEGES...
@@ -37,25 +37,20 @@ export default function CollegeStrip({ selectedId, onSelect }: Props) {
       style={{ borderBottom: "1px solid var(--hair)" }}
     >
       <p
-        className="font-mono text-[10px] tracking-[0.14em] uppercase px-8 pt-4 pb-0"
+        className="font-mono text-[10px] tracking-[0.14em] uppercase px-4 sm:px-8 pt-4 pb-0"
         style={{ color: "var(--muted)" }}
       >
         — Choose your college
       </p>
 
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: `repeat(${colleges.length}, 1fr)`,
-        }}
-      >
+      <div className="flex overflow-x-auto no-scrollbar sm:grid sm:grid-cols-[repeat(auto-fit,minmax(0,1fr))]">
         {colleges.map((col) => {
           const isSel = selectedId === col.id;
           return (
             <button
               key={col.id}
               onClick={() => onSelect(col.id, col.slug, col.name)}
-              className="relative py-4 text-[13px] font-medium transition-all duration-200 text-center"
+              className="relative py-4 px-5 sm:px-0 text-[13px] font-medium transition-all duration-200 text-center whitespace-nowrap shrink-0 sm:shrink"
               style={{
                 color: isSel ? "var(--lumen-bright)" : "var(--muted)",
                 fontWeight: isSel ? 600 : 400,

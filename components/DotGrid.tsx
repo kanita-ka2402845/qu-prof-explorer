@@ -2,7 +2,7 @@
 import { useEffect, useRef, useCallback } from "react";
 
 const COLS = 18;
-const ROWS = 11;
+const ROWS = 18;
 const TOTAL = COLS * ROWS;
 
 export default function DotGrid() {
@@ -84,14 +84,16 @@ export default function DotGrid() {
 
       {/* Dot grid */}
       <div
-        className="absolute inset-0 p-8"
-        style={{
-          display: "grid",
-          gridTemplateColumns: `repeat(${COLS}, 1fr)`,
-          gap: "10px",
-          alignContent: "center",
-        }}
-      >
+  className="absolute inset-0 p-8 flex flex-col justify-between"
+  style={{
+    display: "grid",
+    gridTemplateColumns: `repeat(${COLS}, 1fr)`,
+    gridTemplateRows: `repeat(${ROWS}, 1fr)`, // Added row distribution
+    gap: "10px",
+    alignContent: "stretch", // Stretches grid vertically to fill container
+    alignItems: "center",
+  }}
+>
         {Array.from({ length: TOTAL }).map((_, i) => (
           <div
             key={i}

@@ -3,7 +3,7 @@ import { useAuth } from "@/components/AuthContext";
 import { signOut } from "@/lib/auth";
 import { useRouter } from "next/navigation";
 import { getProfile } from "@/lib/queries";
-import {useState, useEffect} from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 
 export default function Navbar() {
@@ -11,17 +11,17 @@ export default function Navbar() {
   const router = useRouter();
   const [username, setUsername] = useState<string | null>(null);
 
-useEffect(() => {
-  if (session?.user?.id) {
-    getProfile(session.user.id).then((p) => {
-      if (p?.username) setUsername(p.username);
-    });
-  }
-}, [session]);
+  useEffect(() => {
+    if (session?.user?.id) {
+      getProfile(session.user.id).then((p) => {
+        if (p?.username) setUsername(p.username);
+      });
+    }
+  }, [session]);
 
   return (
     <nav
-      className="flex items-center justify-between px-8 py-4"
+      className="flex items-center justify-between px-4 sm:px-8 py-4"
       style={{ borderBottom: "1px solid var(--hair)" }}
     >
       {/* Logo */}
@@ -34,7 +34,7 @@ useEffect(() => {
           }}
         />
         <span
-          className="text-sm font-semibold tracking-wide"
+          className="text-xs sm:text-sm font-semibold tracking-wide"
           style={{ color: "var(--lumen-bright)" }}
         >
           QU PROF EXPLORER
@@ -43,14 +43,14 @@ useEffect(() => {
 
       {/* Centre tag */}
       <span
-        className="font-mono text-[10px] tracking-widest"
+        className="hidden sm:inline-block font-mono text-[10px] tracking-widest"
         style={{ color: "var(--muted)" }}
       >
         QU · V 1.0
       </span>
 
       {/* Right side */}
-      <div className="flex items-center gap-4">
+      <div className="flex items-center gap-3 sm:gap-4">
         {session ? (
           <>
             <div className="flex items-center gap-2">
@@ -59,14 +59,14 @@ useEffect(() => {
                 style={{ background: "#4ade80", boxShadow: "0 0 5px rgba(74,222,128,0.6)" }}
               />
               <Link
-  href="/profile"
-  className="font-mono text-[10px] tracking-widest transition-colors"
-  style={{ color: "var(--muted)" }}
-  onMouseEnter={(e) => (e.currentTarget.style.color = "var(--lumen)")}
-  onMouseLeave={(e) => (e.currentTarget.style.color = "var(--muted)")}
->
-  {username ?? session.user.email?.split('@')[0].toUpperCase()}
-</Link>
+                href="/profile"
+                className="font-mono text-[10px] tracking-widest transition-colors max-w-[110px] sm:max-w-none truncate"
+                style={{ color: "var(--muted)" }}
+                onMouseEnter={(e) => (e.currentTarget.style.color = "var(--lumen)")}
+                onMouseLeave={(e) => (e.currentTarget.style.color = "var(--muted)")}
+              >
+                {username ?? session.user.email?.split('@')[0].toUpperCase()}
+              </Link>
             </div>
             <button
               onClick={async () => { await signOut(); router.refresh(); }}
