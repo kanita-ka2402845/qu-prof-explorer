@@ -209,11 +209,13 @@ export default function ReviewModal({ instructor, onClose, onSuccess }: Props) {
         className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 pointer-events-none"
       >
         <div
-          className="pointer-events-auto w-full max-w-[560px] max-h-[88dvh] rounded-xl flex flex-col"
+          className="pointer-events-auto w-full max-w-[560px] rounded-xl flex flex-col"
           style={{
             background: "var(--graph)",
             border: "1px solid var(--hair2)",
             boxShadow: "var(--rim-inset), var(--shadow-floating)",
+            maxHeight: "calc(100% - 2rem)",
+            height: "auto",
             overflow: "hidden",
           }}
           onClick={(e) => e.stopPropagation()}
@@ -238,8 +240,11 @@ export default function ReviewModal({ instructor, onClose, onSuccess }: Props) {
             </button>
           </div>
 
-          {/* Scrollable Content */}
-          <div style={{ overflowY: "auto", flex: 1 }}>
+          {/* Scrollable Content Container */}
+          <div
+            className="overflow-y-auto flex-1 min-h-0"
+            style={{ WebkitOverflowScrolling: "touch", overscrollBehavior: "contain" }}
+          >
             {loading ? (
               <div className="px-6 py-12 text-center">
                 <p className="font-mono text-[11px] tracking-widest" style={{ color: "var(--muted)" }}>LOADING...</p>
