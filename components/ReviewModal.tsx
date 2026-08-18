@@ -199,24 +199,22 @@ export default function ReviewModal({ instructor, onClose, onSuccess }: Props) {
         onClick={onClose}
       />
 
-      {/* Modal Wrapper */}
-      <motion.div
-        key="modal"
-        initial={{ opacity: 0, y: 20, scale: 0.97 }}
-        animate={{ opacity: 1, y: 0, scale: 1 }}
-        exit={{ opacity: 0, y: 20, scale: 0.97 }}
-        transition={{ duration: 0.28, ease: [0.15, 0.83, 0.66, 1] }}
-        className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 pointer-events-none"
-      >
-        <div
-          className="pointer-events-auto w-full max-w-[560px] rounded-xl flex flex-col"
+      {/* Modal Outer Fixed Container */}
+      <div className="fixed inset-0 z-50 overflow-y-auto px-3 py-4 sm:p-6 flex justify-center items-start sm:items-center pointer-events-none">
+        <motion.div
+          key="modal"
+          initial={{ opacity: 0, y: 15 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: 15 }}
+          transition={{ duration: 0.2, ease: "easeOut" }}
+          className="pointer-events-auto w-full max-w-[560px] rounded-xl flex flex-col my-auto"
           style={{
             background: "var(--graph)",
             border: "1px solid var(--hair2)",
             boxShadow: "var(--rim-inset), var(--shadow-floating)",
-            maxHeight: "calc(100% - 2rem)",
+            maxHeight: "calc(100vh - 2rem)",
             height: "auto",
-            overflow: "hidden",
+            transform: "translateZ(0)",
           }}
           onClick={(e) => e.stopPropagation()}
         >
@@ -394,7 +392,7 @@ export default function ReviewModal({ instructor, onClose, onSuccess }: Props) {
                               placeholder="Course code e.g. CMPS 350"
                               value={newCourseCode}
                               onChange={(e) => setNewCourseCode(e.target.value.toUpperCase())}
-                              className="flex-1 rounded-lg px-3 py-2 text-[13px] outline-none"
+                              className="flex-1 rounded-lg px-3 py-2 text-[16px] sm:text-[13px] outline-none"
                               style={{
                                 background: "var(--void)",
                                 border: "1px solid var(--hair2)",
@@ -583,7 +581,7 @@ export default function ReviewModal({ instructor, onClose, onSuccess }: Props) {
                               onChange={(e) => setCustomTagInput(e.target.value)}
                               onKeyDown={(e) => e.key === "Enter" && handleAddCustomTag()}
                               maxLength={30}
-                              className="flex-1 rounded px-3 py-2 text-[12px] outline-none"
+                              className="flex-1 rounded px-3 py-2 text-[16px] sm:text-[12px] outline-none"
                               style={{
                                 background: "var(--void)",
                                 border: "1px solid var(--hair2)",
@@ -620,7 +618,7 @@ export default function ReviewModal({ instructor, onClose, onSuccess }: Props) {
                           placeholder="What would you tell a friend who just registered for this professor?"
                           rows={5}
                           maxLength={2000}
-                          className="w-full rounded-lg px-4 py-3 text-[13px] outline-none resize-none leading-relaxed"
+                          className="w-full rounded-lg px-4 py-3 text-[16px] sm:text-[13px] outline-none resize-none leading-relaxed"
                           style={{
                             background: "var(--void)",
                             border: "1px solid var(--hair2)",
@@ -737,8 +735,8 @@ export default function ReviewModal({ instructor, onClose, onSuccess }: Props) {
               </AnimatePresence>
             )}
           </div>
-        </div>
-      </motion.div>
+        </motion.div>
+      </div>
     </AnimatePresence>
   );
 }
@@ -762,7 +760,7 @@ const selectStyle: React.CSSProperties = {
   color: "var(--lumen-bright)",
   borderRadius: "8px",
   padding: "10px 12px",
-  fontSize: "13px",
+  fontSize: "16px",
   fontFamily: "inherit",
   outline: "none",
   width: "100%",
