@@ -207,9 +207,9 @@ const [addingCourse, setAddingCourse]   = useState(false);
   animate={{ opacity: 1, y: 0, scale: 1 }}
   exit={{ opacity: 0, y: 20, scale: 0.97 }}
   transition={{ duration: 0.28, ease: [0.15, 0.83, 0.66, 1] }}
-  className="fixed z-50 w-full"
+  className="fixed z-50"
   style={{
-    maxWidth: "560px",
+    width: "min(560px, calc(100vw - 24px))",
     top: "4vh",
     left: "50%",
     transform: "translateX(-50%)",
@@ -676,14 +676,14 @@ const [addingCourse, setAddingCourse]   = useState(false);
 
                     <button
   onClick={() => {
-    if (!courseId || !teachingStyle || wouldRetake === null ||
-        strictAtt === null || affectsGrade === null || body.trim().length < 30) {
-      setError("Please complete all required fields.");
-      return;
-    }
-    setError(null);
-    setStep("conscience");
-  }}
+  if (!courseId || !teachingStyle || wouldRetake === null ||
+      strictAtt === null || affectsGrade === null || body.trim().length < 30) {
+    setError("Please complete all required fields.");
+    return;
+  }
+  setError(null);
+  setChecked(false); // reset checkbox for this attempt's verse
+  setStep("conscience");}}
   className="w-full rounded-lg py-3 text-[13px] font-semibold transition-opacity mt-2"
   style={{
     background: "var(--lumen-bright)",
