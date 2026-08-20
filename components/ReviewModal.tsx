@@ -36,11 +36,13 @@ const CONSCIENCE_LEVELS = [
   },
   {
     verse: "\"O you who have believed, fear Allah and speak words of appropriate justice.\"",
-    source: "Surah Al-Ahzab 33:70"
+    source: "Surah Al-Ahzab 33:70",
+    checkbox: "I confirm that my review is truthful and written with good intent."
   },
   {
     verse: "\"The tongue has no bones, but it is strong enough to break a heart. So be careful with your words.\"",
-    source: null
+    source: null,
+    checkbox: "I have reflected on this reminder before posting."
   },
 ];
 
@@ -182,9 +184,9 @@ export default function ReviewModal({ instructor, onClose, onSuccess }: Props) {
     }
   }
 
-  const ref = CONSCIENCE_LEVELS[conscienceLevel - 1];
-  const isHighLevel = conscienceLevel <= 3;
-  const canProceed = conscienceLevel <= 3 ? checked : true;
+  const ref = CONSCIENCE_LEVELS[Math.min(conscienceLevel, 5) - 1] || CONSCIENCE_LEVELS[0];
+  const hasCheckbox = Boolean(ref.checkbox);
+  const canProceed = hasCheckbox ? checked : true;
 
   return (
     <AnimatePresence>
@@ -305,11 +307,11 @@ export default function ReviewModal({ instructor, onClose, onSuccess }: Props) {
                       This reminder is for me before it is for you.
                     </p>
 
-                    {/* Checkbox (levels 1–3 only) */}
-                    {isHighLevel && (
-                      <label
-                        className="flex items-start gap-3 cursor-pointer mb-6 group"
-                        onClick={() => setChecked(!checked)}
+                    {/* Checkbox */}
+                    {hasCheckbox && (
+                      <div
+                        onClick={() => setChecked((prev) => !prev)}
+                        className="flex items-start gap-3 cursor-pointer mb-6 group select-none"
                       >
                         <div
                           className="w-4 h-4 rounded mt-[2px] flex-shrink-0 flex items-center justify-center transition-all"
@@ -327,7 +329,7 @@ export default function ReviewModal({ instructor, onClose, onSuccess }: Props) {
                         <span className="text-[13px] leading-relaxed" style={{ color: "var(--fore)" }}>
                           {ref.checkbox}
                         </span>
-                      </label>
+                      </div>
                     )}
 
                     <button
