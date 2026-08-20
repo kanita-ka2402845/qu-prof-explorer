@@ -267,3 +267,21 @@ export async function getLikedReviews(userId: string) {
     .order("created_at", { ascending: false });
   return (data ?? []).map((v) => v.reviews).filter(Boolean);
 }
+
+export async function getHeroStats(): Promise<{
+  reviews: number;
+  instructors: number;
+  colleges: number;
+}> {
+  const [{ count: reviews }, { count: instructors }, { count: colleges }] =
+    await Promise.all([
+      supabase.from("reviews").select("*", { count: "exact", head: true }).eq("is_approved", true).eq("is_removed", false),
+      supabase.from("instructors").select("*", { count: "exact", head: true }).eq("is_active", true),
+      supabase.from("colleges").select("*", { count: "exact", head: true }),
+    ]);
+  return {
+    reviews: reviews ?? 0,
+    instructors: instructors ?? 0,
+    colleges: colleges ?? 0,
+  };
+}

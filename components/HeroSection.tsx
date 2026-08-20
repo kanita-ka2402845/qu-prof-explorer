@@ -1,9 +1,17 @@
 "use client";
 import DotGrid from "./DotGrid";
+import {useEffect, useState} from "react";
+import { getHeroStats } from "@/lib/queries";
 
 type Props = { onDiveIn: () => void };
 
 export default function HeroSection({ onDiveIn }: Props) {
+  const [stats, setStats] = useState({ reviews: 0, instructors: 0, colleges: 0 });
+
+  useEffect(() => {
+    getHeroStats().then(setStats);
+  }, []);
+
   return (
     <section
       className="grid grid-cols-1 md:grid-cols-2"
@@ -21,7 +29,7 @@ export default function HeroSection({ onDiveIn }: Props) {
             className="font-mono text-[10px] tracking-[0.18em] uppercase mb-5"
             style={{ color: "var(--muted)" }}
           >
-            — Qatar University · Rate your instructors
+            — Qatar University · Rate your professors
           </p>
 
           <h1
@@ -29,7 +37,7 @@ export default function HeroSection({ onDiveIn }: Props) {
             style={{ fontSize: "clamp(30px,4vw,46px)", color: "var(--lumen-bright)" }}
           >
             Interfaces that<br className="hidden sm:inline" />
-            read as{" "}
+            read as{" "} 
             <span className="font-light italic" style={{ color: "var(--fore)" }}>
               honest.
             </span>
@@ -39,7 +47,7 @@ export default function HeroSection({ onDiveIn }: Props) {
             className="mt-4 text-xs sm:text-sm leading-[1.75] max-w-[340px]"
             style={{ color: "var(--fore)" }}
           >
-            Instructor reviews written by students who showed up.{" "}
+            Professor reviews written by students who showed up.{" "}
             <strong style={{ color: "var(--lumen)", fontWeight: 500 }}>
               No admin. No filter.
             </strong>{" "}
@@ -68,9 +76,9 @@ export default function HeroSection({ onDiveIn }: Props) {
           style={{ borderTop: "1px solid var(--hair)" }}
         >
           {[
-            { val: "1,240", label: "Reviews" },
-            { val: "86",    label: "Instructors" },
-            { val: "4",     label: "Colleges" },
+            { val: stats.reviews > 0 ? stats.reviews.toLocaleString() : "—", label: "Reviews" },
+            { val: stats.instructors > 0 ? stats.instructors.toLocaleString() : "—", label: "Instructors" },
+            { val: stats.colleges > 0 ? String(stats.colleges) : "—", label: "Colleges" },
           ].map(({ val, label }) => (
             <div key={label} className="flex flex-col gap-1">
               <span

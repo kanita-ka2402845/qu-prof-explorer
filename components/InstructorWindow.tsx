@@ -5,6 +5,9 @@ import { Search } from "lucide-react";
 import { getInstructorsByDepartment } from "@/lib/queries";
 import type { Instructor } from "@/lib/data";
 import { useRouter } from "next/navigation";
+import SuggestModal from "./SuggestModal";
+
+
 
 type Props = {
   departmentId: string;
@@ -18,6 +21,7 @@ export default function InstructorWindow({ departmentId, departmentName, college
   const [loading, setLoading] = useState(true);
   const [query, setQuery] = useState("");
   const router = useRouter();
+  const [showSuggest, setShowSuggest] = useState(false);
 
   useEffect(() => {
     setLoading(true);
@@ -162,6 +166,27 @@ export default function InstructorWindow({ departmentId, departmentName, college
             ))
           )}
         </div>
+        <div
+  className="px-4 py-3 flex justify-end"
+  style={{ borderTop: "1px solid var(--hair)" }}
+>
+  <button
+    onClick={() => setShowSuggest(true)}
+    className="font-mono text-[10px] tracking-widest transition-colors"
+    style={{
+      color: "var(--muted)", background: "transparent",
+      border: "none", cursor: "pointer", fontFamily: "inherit",
+    }}
+    onMouseEnter={(e) => (e.currentTarget.style.color = "var(--lumen)")}
+    onMouseLeave={(e) => (e.currentTarget.style.color = "var(--muted)")}
+  >
+    + Suggest a missing professor
+  </button>
+</div>
+
+{showSuggest && (
+  <SuggestModal mode="suggest" onClose={() => setShowSuggest(false)} />
+)}
       </div>
     </motion.section>
   );

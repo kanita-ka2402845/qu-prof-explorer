@@ -1,18 +1,22 @@
 "use client";
 import type { FullInstructor } from "@/app/professors/[slug]/page";
+import { useState } from "react";
+import SuggestModal from "./SuggestModal";
 
 const STYLE_LABELS: Record<string, string> = {
   reads_slides:           "Reads from slides",
   explains_beyond_slides: "Explains beyond slides",
   discussion_based:       "Discussion-based",
   heavy_examples:         "Heavy on examples",
-  research_focused:       "Research-focused",
   mixed:                  "Mixed / varies",
 };
 
 type Props = { instructor: FullInstructor };
 
 export default function InstructorHeader({ instructor: inst }: Props) {
+
+  const [showCorrect, setShowCorrect] = useState(false);
+
   const retakeTotal = inst.retake_yes_count + inst.retake_no_count;
   const retakePct   = retakeTotal > 0
     ? Math.round((inst.retake_yes_count / retakeTotal) * 100)
@@ -61,6 +65,29 @@ export default function InstructorHeader({ instructor: inst }: Props) {
           <div className="font-mono text-[10px] tracking-widest mt-1" style={{ color: "var(--muted)" }}>
             SIGNAL STRENGTH
           </div>
+
+          <button
+  onClick={() => setShowCorrect(true)}
+  className="font-mono text-[10px] tracking-widest mt-3 transition-colors"
+  style={{
+    color: "var(--muted)", background: "transparent",
+    border: "none", cursor: "pointer", fontFamily: "inherit",
+    textDecoration: "underline", textUnderlineOffset: "3px",
+  }}
+  onMouseEnter={(e) => (e.currentTarget.style.color = "var(--fore)")}
+  onMouseLeave={(e) => (e.currentTarget.style.color = "var(--muted)")}
+>
+  Something wrong with this info?
+</button>
+
+{showCorrect && (
+  <SuggestModal
+    mode="correct"
+    instructorId={inst.id}
+    instructorName={inst.full_name}
+    onClose={() => setShowCorrect(false)}
+  />
+)}
         </div>
       </div>
 
