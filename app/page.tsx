@@ -38,18 +38,24 @@ function HomeInner() {
 
   function handleDiveIn() {
     setShowColleges(true);
-    setTimeout(() => collegeRef.current?.scrollIntoView({ behavior: "smooth", block: "nearest" }), 100);
+    requestAnimationFrame(() => {
+      collegeRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
   }
 
   function handleCollegeSelect(id: string, slug: string, name: string) {
     setCollege({ id, slug, name });
     setDept(null);
-    setTimeout(() => deptRef.current?.scrollIntoView({ behavior: "smooth", block: "nearest" }), 100);
+    requestAnimationFrame(() => {
+      deptRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
   }
 
   function handleDeptSelect(id: string, name: string) {
     setDept({ id, name });
-    setTimeout(() => windowRef.current?.scrollIntoView({ behavior: "smooth", block: "nearest" }), 100);
+    requestAnimationFrame(() => {
+      windowRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
   }
 
   return (

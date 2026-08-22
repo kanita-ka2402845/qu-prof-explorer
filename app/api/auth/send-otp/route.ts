@@ -24,8 +24,8 @@ export async function POST(req: NextRequest) {
   const otp = linkData.properties.email_otp;
 
   const { error: emailError } = await resend.emails.send({
-    from: "QU Prof Explorer <onboarding@resend.dev>",
-    to: "ka2402845@qu.edu.qa",
+    from: "QU Prof Explorer <noreply@quprofexplorer.com>",
+    to: email,
     subject: "Your QU Prof Explorer verification code",
     html: `
       <div style="font-family: monospace; background: #0d0e10; color: #e8edf5; padding: 40px; border-radius: 12px; max-width: 400px;">

@@ -78,7 +78,7 @@
 
 * { box-sizing: border-box; }
 
-html { scroll-behavior: smooth; }
+html { height: -webkit-fill-available;}
 
 body {
   background-color: var(--void);
@@ -89,9 +89,15 @@ body {
   -webkit-font-smoothing: auto;
   -moz-osx-font-smoothing: auto;
   overflow-x: hidden;
+  min-height: 100dvh; /* Dynamic viewport height for iOS */
 }
 
 .font-mono { font-family: 'Space Mono', monospace; }
+
+main {
+  width: 100%;
+  min-width: 0;
+}
 
 /* =========================================================
    CARD UTILITIES — radial glow layered under surface color
