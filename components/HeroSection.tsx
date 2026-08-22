@@ -26,33 +26,30 @@ export default function HeroSection({ onDiveIn }: Props) {
       >
         <div>
           <p
-            className="font-mono text-[10px] tracking-[0.18em] uppercase mb-5"
-            style={{ color: "var(--muted)" }}
-          >
-            — Qatar University · Rate your professors
-          </p>
+  className="font-mono text-[10px] tracking-[0.18em] uppercase mb-5"
+  style={{ color: "var(--muted)" }}
+>
+  — Qatar University · Know before you register
+</p>
 
-          <h1
-            className="font-bold leading-[1.02] tracking-[-0.03em]"
-            style={{ fontSize: "clamp(30px,4vw,46px)", color: "var(--lumen-bright)" }}
-          >
-            Interfaces that<br className="hidden sm:inline" />
-            read as{" "} 
-            <span className="font-light italic" style={{ color: "var(--fore)" }}>
-              honest.
-            </span>
-          </h1>
+<h1
+  className="font-bold leading-[1.02] tracking-[-0.03em]"
+  style={{ fontSize: "clamp(30px,4vw,46px)", color: "var(--lumen-bright)" }}
+>
+  Every semester,<br />
+  the same question.
+</h1>
 
-          <p
-            className="mt-4 text-xs sm:text-sm leading-[1.75] max-w-[340px]"
-            style={{ color: "var(--fore)" }}
-          >
-            Professor reviews written by students who showed up.{" "}
-            <strong style={{ color: "var(--lumen)", fontWeight: 500 }}>
-              No admin. No filter.
-            </strong>{" "}
-            Just the signal you need before you register.
-          </p>
+<p
+  className="mt-4 text-sm leading-[1.75] max-w-[340px]"
+  style={{ color: "var(--fore)" }}
+>
+  <em style={{ color: "var(--lumen)", fontStyle: "italic" }}>
+    "What's this professor like?"
+  </em>
+  <br />
+  Now there's an answer.
+</p>
 
           <div className="mt-7">
             <button
