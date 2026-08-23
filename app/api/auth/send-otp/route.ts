@@ -21,6 +21,13 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Failed to generate code." }, { status: 500 });
   }
 
+  if (!email.endsWith('@qu.edu.qa')) {
+  return NextResponse.json(
+    { error: 'Only @qu.edu.qa email addresses are allowed.' },
+    { status: 400 }
+  );
+}
+
   const otp = linkData.properties.email_otp;
 
   const { error: emailError } = await resend.emails.send({
