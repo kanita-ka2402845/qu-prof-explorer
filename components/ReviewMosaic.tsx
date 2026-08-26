@@ -10,7 +10,6 @@ const TEACHING_STYLE_LABELS: Record<string, string> = {
   explains_beyond_slides: "Explains beyond slides",
   discussion_based:       "Discussion-based",
   heavy_examples:         "Heavy on examples",
-  research_focused:       "Research-focused",
   mixed:                  "Mixed / varies",
 };
 
@@ -56,19 +55,19 @@ export default function ReviewMosaic({ reviews, instructorId, onWriteReview }: P
   }
 
   return (
-    <section className="px-8 py-8">
-      {/* Permanent ambient line + THINK */}
+    <section className="px-4 sm:px-8 py-6 sm:py-8 w-full min-w-0">
+      {/* Header & THINK button */}
       <div
-        className="flex items-start justify-between gap-4 mb-8 pb-5"
+        className="flex items-start justify-between gap-4 mb-6 sm:mb-8 pb-4 sm:pb-5"
         style={{ borderBottom: "1px solid var(--hair)" }}
       >
         <div className="flex flex-col gap-1">
-            <p className="font-mono text-[10px] tracking-widest" style={{ color: "var(--muted)" }}>
-      Say what would benefit your fellow students — truthful, helpful, &  kind.
-    </p>
-    <p className="font-mono text-[10px] mt-1" style={{ color: "var(--fore)" }}>
-      Negative reviews are welcome and needed.
-    </p>
+          <p className="font-mono text-[10px] tracking-widest" style={{ color: "var(--muted)" }}>
+            Say what would benefit your fellow students — truthful, helpful, & kind.
+          </p>
+          <p className="font-mono text-[10px] mt-1" style={{ color: "var(--fore)" }}>
+            Negative reviews are welcome and needed.
+          </p>
         </div>
         <div className="flex-shrink-0">
           <ThinkButton />
@@ -78,7 +77,7 @@ export default function ReviewMosaic({ reviews, instructorId, onWriteReview }: P
       {/* Empty state */}
       {reviews.length === 0 && (
         <div
-          className="flex flex-col items-center justify-center py-20 rounded-xl"
+          className="flex flex-col items-center justify-center py-16 sm:py-20 px-4 rounded-xl text-center"
           style={{ border: "1px solid var(--hair)", background: "var(--graph)" }}
         >
           <p className="font-mono text-[11px] tracking-widest mb-6" style={{ color: "var(--muted)" }}>
@@ -92,7 +91,6 @@ export default function ReviewMosaic({ reviews, instructorId, onWriteReview }: P
               border: "none",
               boxShadow: "var(--rim-inset)",
               cursor: "pointer",
-              fontFamily: "inherit",
             }}
             onClick={onWriteReview}
           >
@@ -101,10 +99,10 @@ export default function ReviewMosaic({ reviews, instructorId, onWriteReview }: P
         </div>
       )}
 
-      {/* Mosaic */}
+      {/* Safe WebKit Columns Layout */}
       {reviews.length > 0 && (
         <>
-          <div style={{ columns: "1", columnGap: "10px" }} className="mosaic-grid">
+          <div className="columns-1 sm:columns-2 lg:columns-3 gap-3 space-y-3">
             {reviews.map((review, idx) => (
               <ReviewCard
                 key={review.id}
@@ -118,21 +116,20 @@ export default function ReviewMosaic({ reviews, instructorId, onWriteReview }: P
           </div>
 
           <div
-            className="mt-8 flex items-center justify-between px-6 py-4 rounded-lg"
+            className="mt-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 px-6 py-4 rounded-lg"
             style={{ border: "1px solid var(--hair)", background: "var(--graph)" }}
           >
             <p className="text-[13px]" style={{ color: "var(--fore)" }}>
               Took a course with this instructor?
             </p>
             <button
-              className="font-mono text-[11px] tracking-widest px-5 py-[8px] rounded-md transition-opacity hover:opacity-85"
+              className="font-mono text-[11px] tracking-widest px-5 py-[8px] rounded-md transition-opacity hover:opacity-85 w-full sm:w-auto text-center"
               style={{
                 background: "var(--lumen-bright)",
                 color: "var(--void)",
                 border: "none",
                 boxShadow: "var(--rim-inset)",
                 cursor: "pointer",
-                fontFamily: "inherit",
               }}
               onClick={onWriteReview}
             >
@@ -141,11 +138,6 @@ export default function ReviewMosaic({ reviews, instructorId, onWriteReview }: P
           </div>
         </>
       )}
-
-      <style>{`
-        @media (min-width: 640px)  { .mosaic-grid { columns: 2 !important; } }
-        @media (min-width: 900px)  { .mosaic-grid { columns: 3 !important; } }
-      `}</style>
     </section>
   );
 }
@@ -166,31 +158,31 @@ function ReviewCard({ review, idx, voted, helpfulCount, onVote }: CardProps) {
     <motion.div
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.3, delay: idx * 0.04, ease: [0.15, 0.83, 0.66, 1] }}
+      transition={{ duration: 0.3, delay: Math.min(idx * 0.04, 0.4), ease: [0.15, 0.83, 0.66, 1] }}
+      className="break-inside-avoid mb-3"
       style={{
         background: "var(--graph)",
         border: "1px solid var(--hair)",
         borderRadius: "10px",
         padding: "16px",
-        marginBottom: "10px",
-        breakInside: "avoid",
         position: "relative",
         overflow: "hidden",
         boxShadow: "var(--rim-inset), var(--shadow-card)",
+        WebkitBackfaceVisibility: "hidden", // Stops Safari blur/flicker bugs inside multi-column
       }}
     >
       <div style={{ position: "absolute", inset: 0, pointerEvents: "none", background: "var(--radial-glow)", opacity: 0.6 }} />
 
       <div className="flex items-center justify-between mb-3">
-        <span className="font-mono text-[10px] tracking-widest uppercase" style={{ color: "var(--lumen)" }}>
+        <span className="font-mono text-[10px] tracking-widest uppercase truncate" style={{ color: "var(--lumen)" }}>
           {review.courses?.code ?? "—"}
         </span>
-        <span className="font-mono text-[10px]" style={{ color: "var(--muted)" }}>
+        <span className="font-mono text-[10px] shrink-0" style={{ color: "var(--muted)" }}>
           {review.semester} {review.semester_year}
         </span>
       </div>
 
-      <p className="text-[13px] leading-[1.7]" style={{ color: "var(--fore)" }}>
+      <p className="text-[13px] leading-[1.7] break-words" style={{ color: "var(--fore)" }}>
         {review.body}
       </p>
 
@@ -213,7 +205,7 @@ function ReviewCard({ review, idx, voted, helpfulCount, onVote }: CardProps) {
           <div className="flex flex-col gap-[2px]">
             <span className="font-mono text-[9px] uppercase tracking-widest" style={{ color: "var(--muted)" }}>Grade</span>
             <span className="text-[12px] font-semibold" style={{ color: "var(--lumen-bright)" }}>
-              {GRADE_LABELS[review.grade_received]}
+              {GRADE_LABELS[review.grade_received] ?? review.grade_received}
             </span>
           </div>
         )}
@@ -221,9 +213,9 @@ function ReviewCard({ review, idx, voted, helpfulCount, onVote }: CardProps) {
 
       {review.teaching_style && (
         <div className="mt-3">
-          <span className="font-mono text-[10px] px-2 py-[3px] rounded"
+          <span className="font-mono text-[10px] px-2 py-[3px] rounded inline-block"
             style={{ background: "var(--panel)", color: "var(--fore)", border: "1px solid var(--hair2)" }}>
-            {TEACHING_STYLE_LABELS[review.teaching_style]}
+            {TEACHING_STYLE_LABELS[review.teaching_style] ?? review.teaching_style}
           </span>
         </div>
       )}
@@ -249,7 +241,6 @@ function ReviewCard({ review, idx, voted, helpfulCount, onVote }: CardProps) {
             border: `1px solid ${voted ? "rgba(174,187,208,0.4)" : "transparent"}`,
             color: voted ? "var(--accent-bright)" : "var(--muted)",
             cursor: "pointer",
-            fontFamily: "inherit",
           }}
           onMouseEnter={(e) => {
             if (!voted) (e.currentTarget as HTMLButtonElement).style.color = "var(--lumen)";
@@ -274,7 +265,7 @@ function ThinkButton() {
         className="font-mono text-[10px] tracking-widest px-3 py-[5px] rounded transition-all"
         style={{
           color: "var(--muted)", border: "1px solid var(--hair2)",
-          background: "transparent", cursor: "pointer", fontFamily: "inherit", whiteSpace: "nowrap",
+          background: "transparent", cursor: "pointer", whiteSpace: "nowrap",
         }}
         onMouseEnter={(e) => (e.currentTarget.style.color = "var(--lumen)")}
         onMouseLeave={(e) => (e.currentTarget.style.color = "var(--muted)")}
@@ -285,10 +276,10 @@ function ThinkButton() {
         <motion.div
           initial={{ opacity: 0, y: -4, scale: 0.97 }}
           animate={{ opacity: 1, y: 0, scale: 1 }}
-          className="absolute right-0 mt-2 rounded-lg px-4 py-4 z-20"
+          className="absolute right-0 mt-2 rounded-lg px-4 py-4 z-30 max-w-[calc(100vw-2rem)] w-[280px]"
           style={{
             background: "var(--panel)", border: "1px solid var(--hair2)",
-            boxShadow: "var(--rim-inset), var(--shadow-floating)", width: "280px",
+            boxShadow: "var(--rim-inset), var(--shadow-floating)",
           }}
         >
           <p className="text-[12px] leading-relaxed mb-3" style={{ color: "var(--fore)" }}>
@@ -315,16 +306,21 @@ function ThinkButton() {
 }
 
 function getTimeAgo(dateStr: string): string {
-  const diff = Date.now() - new Date(dateStr).getTime();
+  if (!dateStr) return "recently";
+  const parsed = new Date(dateStr).getTime();
+  if (isNaN(parsed)) return "recently";
+
+  const diff = Date.now() - parsed;
   const mins  = Math.floor(diff / 60000);
   const hours = Math.floor(diff / 3600000);
   const days  = Math.floor(diff / 86400000);
   const weeks = Math.floor(days / 7);
   const months = Math.floor(days / 30);
+
+  if (mins < 1)   return `just now`;
   if (mins < 60)  return `${mins}m ago`;
   if (hours < 24) return `${hours}h ago`;
   if (days < 7)   return `${days}d ago`;
   if (weeks < 5)  return `${weeks}w ago`;
   return `${months}mo ago`;
 }
-

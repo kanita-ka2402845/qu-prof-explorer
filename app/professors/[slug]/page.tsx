@@ -1,7 +1,6 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useParams, useSearchParams, useRouter } from "next/navigation";
-import { motion } from "framer-motion";
 import { supabase } from "@/lib/supabase";
 import ReviewMosaic from "@/components/ReviewMosaic";
 import InstructorHeader from "@/components/InstructorHeader";
@@ -65,55 +64,57 @@ export default function ProfessorPage() {
   const [reviews, setReviews]       = useState<Review[]>([]);
   const [loading, setLoading]       = useState(true);
 
-const { session } = useAuth();
-const [showAuth, setShowAuth] = useState(false);
+  const { session } = useAuth();
+  const [showAuth, setShowAuth] = useState(false);
+  const [showReviewModal, setShowReviewModal] = useState(false);
 
-const [showReviewModal, setShowReviewModal] = useState(false);
+  const fetchInstructorAndReviews = useCallback(async () => {
+    if (!slug) return;
+    
+    const { data: inst } = await supabase
+      .from("instructors")
+      .select(`
+        id, full_name, slug, avg_clarity, avg_exam_difficulty,
+        signal_strength, review_count, retake_yes_count, retake_no_count,
+        attendance_strict_yes, attendance_strict_no, top_teaching_style,
+        grade_flying_colours, grade_pass_alright, grade_barely_pass, grade_retook,
+        departments(name, colleges(name)),
+        courses(id, code, name)
+      `)
+      .eq("slug", slug)
+      .single();
 
-function handleWriteReview() {
-  if (session) {
-    setShowReviewModal(true);
-  } else {
-    setShowAuth(true);
-  }
-}
+    if (!inst) { setLoading(false); return; }
+    setInstructor(inst as unknown as FullInstructor);
+
+    const { data: revs } = await supabase
+      .from("reviews")
+      .select(`
+        id, body, clarity, exam_difficulty, would_retake,
+        attendance_strict, attendance_affects_grade, teaching_style,
+        grade_received, semester, semester_year, helpful_count, created_at,
+        courses(code),
+        review_tags(tags(label))
+      `)
+      .eq("instructor_id", inst.id)
+      .eq("is_removed", false)
+      .order("helpful_count", { ascending: false });
+
+    setReviews((revs ?? []) as unknown as Review[]);
+    setLoading(false);
+  }, [slug]);
 
   useEffect(() => {
-    async function load() {
-      const { data: inst } = await supabase
-        .from("instructors")
-        .select(`
-          id, full_name, slug, avg_clarity, avg_exam_difficulty,
-          signal_strength, review_count, retake_yes_count, retake_no_count,
-          attendance_strict_yes, attendance_strict_no, top_teaching_style,
-          grade_flying_colours, grade_pass_alright, grade_barely_pass, grade_retook,
-          departments(name, colleges(name)),
-          courses(id, code, name)
-        `)
-        .eq("slug", slug)
-        .single();
+    fetchInstructorAndReviews();
+  }, [fetchInstructorAndReviews]);
 
-      if (!inst) { setLoading(false); return; }
-      setInstructor(inst as unknown as FullInstructor);
-
-      const { data: revs } = await supabase
-        .from("reviews")
-        .select(`
-          id, body, clarity, exam_difficulty, would_retake,
-          attendance_strict, attendance_affects_grade, teaching_style,
-          grade_received, semester, semester_year, helpful_count, created_at,
-          courses(code),
-          review_tags(tags(label))
-        `)
-        .eq("instructor_id", inst.id)
-        .eq("is_removed", false)
-        .order("helpful_count", { ascending: false });
-
-      setReviews((revs ?? []) as unknown as Review[]);
-      setLoading(false);
+  function handleWriteReview() {
+    if (session) {
+      setShowReviewModal(true);
+    } else {
+      setShowAuth(true);
     }
-    load();
-  }, [slug]);
+  }
 
   function handleBack() {
     router.push(
@@ -122,7 +123,7 @@ function handleWriteReview() {
   }
 
   if (loading) return (
-    <main className="min-h-screen flex items-center justify-center" style={{ background: "var(--void)" }}>
+    <main className="min-h-dvh flex items-center justify-center" style={{ background: "var(--void)" }}>
       <p className="font-mono text-[11px] tracking-widest" style={{ color: "var(--muted)" }}>
         LOADING...
       </p>
@@ -130,39 +131,38 @@ function handleWriteReview() {
   );
 
   if (!instructor) return (
-    <main className="min-h-screen flex items-center justify-center" style={{ background: "var(--void)" }}>
+    <main className="min-h-dvh flex items-center justify-center" style={{ background: "var(--void)" }}>
       <p className="font-mono text-[11px] tracking-widest" style={{ color: "var(--muted)" }}>
         INSTRUCTOR NOT FOUND.
       </p>
     </main>
   );
 
-
-
-
-
   return (
-    <main className="min-h-screen">
-      <div className="mx-auto max-w-5xl" style={{ border: "1px solid var(--hair)" }}>
+    <main className="min-h-dvh w-full overflow-x-hidden">
+      <div className="mx-auto max-w-5xl w-full" style={{ border: "1px solid var(--hair)" }}>
 
-        {/* Nav bar */}
+        {/* Responsive Mobile Header */}
         <div
-          className="flex items-center justify-between px-8 py-4"
+          className="flex items-center justify-between px-4 sm:px-8 py-4 w-full min-w-0"
           style={{ borderBottom: "1px solid var(--hair)" }}
         >
           <button
             onClick={handleBack}
-            className="font-mono text-[11px] tracking-widest transition-colors"
-            style={{ color: "var(--muted)", background: "transparent", border: "none", cursor: "pointer", fontFamily: "inherit" }}
+            className="font-mono text-[11px] tracking-widest transition-colors shrink-0"
+            style={{ color: "var(--muted)", background: "transparent", border: "none", cursor: "pointer" }}
             onMouseEnter={(e) => (e.currentTarget.style.color = "var(--lumen)")}
             onMouseLeave={(e) => (e.currentTarget.style.color = "var(--muted)")}
           >
             ← BACK
           </button>
-          <span className="font-mono text-[10px] tracking-widest" style={{ color: "var(--muted)" }}>
+          
+          <span className="font-mono text-[10px] tracking-widest truncate px-2" style={{ color: "var(--muted)" }}>
             QU PROF EXPLORER
           </span>
-          <div style={{ width: "60px" }} />
+
+          {/* Balanced spacer using flexible width */}
+          <div className="w-12 sm:w-16 shrink-0" />
         </div>
 
         <div className="horizon-line"><div className="horizon-pulse" /></div>
@@ -173,39 +173,40 @@ function handleWriteReview() {
         <div className="horizon-line" />
 
         {/* Review mosaic */}
-       <ReviewMosaic
-  reviews={reviews}
-  instructorId={instructor.id}
-  onWriteReview={handleWriteReview}
-/>
+        <ReviewMosaic
+          reviews={reviews}
+          instructorId={instructor.id}
+          onWriteReview={handleWriteReview}
+        />
 
-        <div className="horizon-line mt-2 mb-6 mx-8" style={{ opacity: 0.5 }} />
-        <p className="font-mono text-[10px] text-center pb-6 tracking-widest" style={{ color: "var(--muted)" }}>
+        <div className="horizon-line mt-2 mb-6 mx-4 sm:mx-8" style={{ opacity: 0.5 }} />
+        <p className="font-mono text-[10px] text-center pb-6 tracking-widest px-4" style={{ color: "var(--muted)" }}>
           QU PROF EXPLORER · V 1.0 · FOR STUDENTS, BY STUDENTS
         </p>
       </div>
+
       {showAuth && (
-  <AuthModal
-  onClose={() => setShowAuth(false)}
-  onSuccess={async () => {
-    setShowAuth(false);
-    // Small delay to let auth state propagate
-    await new Promise(r => setTimeout(r, 300));
-    setShowReviewModal(true);
-  }}
-/>
-)}
-{showReviewModal && instructor && (
-  <ReviewModal
-    instructor={instructor}
-    onClose={() => setShowReviewModal(false)}
-    onSuccess={() => {
-      setShowReviewModal(false);
-      // Reload reviews
-      window.location.reload();
-    }}
-  />
-)}
+        <AuthModal
+          onClose={() => setShowAuth(false)}
+          onSuccess={async () => {
+            setShowAuth(false);
+            await new Promise(r => setTimeout(r, 300));
+            setShowReviewModal(true);
+          }}
+        />
+      )}
+
+      {showReviewModal && instructor && (
+        <ReviewModal
+          instructor={instructor}
+          onClose={() => setShowReviewModal(false)}
+          onSuccess={() => {
+            setShowReviewModal(false);
+            // Re-fetch state directly instead of hard browser reload
+            fetchInstructorAndReviews();
+          }}
+        />
+      )}
     </main>
   );
 }
