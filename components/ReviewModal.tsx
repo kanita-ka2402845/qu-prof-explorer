@@ -171,18 +171,18 @@ export default function ReviewModal({ instructor, onClose, onSuccess }: Props) {
     setStep("success");
   }
 
-  async function handleAddCourse() {
-    if (!newCourseCode.trim()) return;
-    setAddingCourse(true);
-    const course = await addCourseToInstructor(instructor.id, newCourseCode);
-    setAddingCourse(false);
-    if (course) {
-      instructor.courses.push(course);
-      setCourseId(course.id);
-      setShowAddCourse(false);
-      setNewCourseCode("");
-    }
+async function handleAddCourse() {
+  if (!newCourseCode.trim()) return;
+  setAddingCourse(true);
+  const course = await addCourseToInstructor(instructor.id, newCourseCode);
+  setAddingCourse(false);
+  if (course) {
+    instructor.courses.push(course);
+    setCourseId(course.id);
+    setShowAddCourse(false);
+    setNewCourseCode("");
   }
+}
 
   const ref = CONSCIENCE_LEVELS[Math.min(conscienceLevel, 5) - 1] || CONSCIENCE_LEVELS[0];
   const hasCheckbox = Boolean(ref.checkbox);
@@ -362,64 +362,114 @@ export default function ReviewModal({ instructor, onClose, onSuccess }: Props) {
                   >
                     <div className="flex flex-col gap-6">
 
-                      {/* Course + Semester */}
-                      <div className="flex flex-col gap-3">
-                        <FieldLabel>Course</FieldLabel>
-                        <select
-                          value={courseId}
-                          onChange={(e) => {
-                            if (e.target.value === "__add__") {
-                              setShowAddCourse(true);
-                            } else {
-                              setCourseId(e.target.value);
-                              setShowAddCourse(false);
-                            }
-                          }}
-                          style={selectStyle}
-                        >
-                          {instructor.courses.map((c) => (
-                            <option key={c.id} value={c.id}>{c.code}{c.name ? ` — ${c.name}` : ""}</option>
-                          ))}
-                          <option value="__add__">+ Add a course…</option>
-                        </select>
+                     {/* Course + Semester */}
+<div className="flex flex-col gap-3">
+  <FieldLabel>Course</FieldLabel>
 
-                        {showAddCourse && (
-                          <motion.div
-                            initial={{ opacity: 0, y: -4 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            className="flex gap-2"
-                          >
-                            <input
-                              type="text"
-                              placeholder="Course code e.g. CMPS 350"
-                              value={newCourseCode}
-                              onChange={(e) => setNewCourseCode(e.target.value.toUpperCase())}
-                              className="flex-1 rounded-lg px-3 py-2 text-[16px] sm:text-[13px] outline-none"
-                              style={{
-                                background: "var(--void)",
-                                border: "1px solid var(--hair2)",
-                                color: "var(--lumen-bright)",
-                                fontFamily: "inherit",
-                              }}
-                            />
-                            <button
-                              onClick={handleAddCourse}
-                              disabled={addingCourse || newCourseCode.length < 4}
-                              className="font-mono text-[10px] px-3 py-2 rounded-lg"
-                              style={{
-                                background: "var(--lumen-bright)",
-                                color: "var(--void)",
-                                border: "none",
-                                cursor: "pointer",
-                                fontFamily: "inherit",
-                                opacity: addingCourse || newCourseCode.length < 4 ? 0.5 : 1,
-                              }}
-                            >
-                              {addingCourse ? "Adding…" : "Add"}
-                            </button>
-                          </motion.div>
-                        )}
-                      </div>
+  {instructor.courses.length === 0 ? (
+    // No courses — show add field directly, skip dropdown
+    <div>
+      <p className="font-mono text-[10px] mb-3" style={{ color: "var(--muted)" }}>
+        No courses listed yet for this instructor.
+      </p>
+      <motion.div
+        initial={{ opacity: 0, y: -4 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="flex gap-2"
+      >
+        <input
+          type="text"
+          placeholder="Course code e.g. CMPS 350"
+          value={newCourseCode}
+          onChange={(e) => setNewCourseCode(e.target.value.toUpperCase())}
+          className="flex-1 rounded-lg px-3 py-2 text-[16px] sm:text-[13px] outline-none"
+          style={{
+            background: "var(--void)",
+            border: "1px solid var(--hair2)",
+            color: "var(--lumen-bright)",
+            fontFamily: "inherit",
+          }}
+        />
+        <button
+          onClick={handleAddCourse}
+          disabled={addingCourse || newCourseCode.length < 4}
+          className="font-mono text-[10px] px-3 py-2 rounded-lg"
+          style={{
+            background: "var(--lumen-bright)",
+            color: "var(--void)",
+            border: "none",
+            cursor: "pointer",
+            fontFamily: "inherit",
+            opacity: addingCourse || newCourseCode.length < 4 ? 0.5 : 1,
+          }}
+        >
+          {addingCourse ? "Adding…" : "Add"}
+        </button>
+      </motion.div>
+    </div>
+  ) : (
+    // Has courses — show dropdown with add option
+    <>
+      <select
+        value={showAddCourse ? "__add__" : courseId}
+        onChange={(e) => {
+          if (e.target.value === "__add__") {
+            setShowAddCourse(true);
+            setCourseId("");
+          } else {
+            setCourseId(e.target.value);
+            setShowAddCourse(false);
+          }
+        }}
+        style={selectStyle}
+      >
+        {instructor.courses.map((c) => (
+          <option key={c.id} value={c.id}>
+            {c.code}{c.name ? ` — ${c.name}` : ""}
+          </option>
+        ))}
+        <option value="__add__">+ Add a course…</option>
+      </select>
+
+      {showAddCourse && (
+        <motion.div
+          initial={{ opacity: 0, y: -4 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="flex gap-2"
+        >
+          <input
+            type="text"
+            placeholder="Course code e.g. CMPS 350"
+            value={newCourseCode}
+            onChange={(e) => setNewCourseCode(e.target.value.toUpperCase())}
+            className="flex-1 rounded-lg px-3 py-2 text-[16px] sm:text-[13px] outline-none"
+            style={{
+              background: "var(--void)",
+              border: "1px solid var(--hair2)",
+              color: "var(--lumen-bright)",
+              fontFamily: "inherit",
+            }}
+          />
+          <button
+            onClick={handleAddCourse}
+            disabled={addingCourse || newCourseCode.length < 4}
+            className="font-mono text-[10px] px-3 py-2 rounded-lg"
+            style={{
+              background: "var(--lumen-bright)",
+              color: "var(--void)",
+              border: "none",
+              cursor: "pointer",
+              fontFamily: "inherit",
+              opacity: addingCourse || newCourseCode.length < 4 ? 0.5 : 1,
+            }}
+          >
+            {addingCourse ? "Adding…" : "Add"}
+          </button>
+        </motion.div>
+      )}
+    </>
+  )}
+</div>
 
                       <div className="grid gap-3" style={{ gridTemplateColumns: "1fr 1fr" }}>
                         <div className="flex flex-col gap-2">
