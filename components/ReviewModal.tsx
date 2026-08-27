@@ -275,27 +275,40 @@ async function handleAddCourse() {
 
                       {/* Backbiting reveal — level 1 only */}
                       {conscienceLevel === 1 && (
-                        <div className="mt-4">
-                          <button
-                            onClick={() => setShowBackbiting(!showBackbiting)}
-                            className="font-mono text-[10px] tracking-widest"
-                            style={{ color: "var(--fore)", background: "transparent", border: "none", cursor: "pointer", fontFamily: "inherit" }}
-                          >
-                            {showBackbiting ? "▾" : "▸"} What is backbiting?
-                          </button>
-                          {showBackbiting && (
-                            <motion.p
-                              initial={{ opacity: 0, height: 0 }}
-                              animate={{ opacity: 1, height: "auto" }}
-                              className="text-[12px] leading-[1.7] mt-3"
-                              style={{ color: "var(--fore)" }}
-                            >
-                              The Prophet ﷺ asked, "Do you know what backbiting is?" They said, "Allah and His Messenger know best." He said, "Mentioning your brother with something he dislikes." — Sahih Muslim
-                            </motion.p>
-                          )}
-                        </div>
-                      )}
-                    </div>
+  <div className="mt-4">
+    <button
+      onClick={() => setShowBackbiting(!showBackbiting)}
+      className="w-full flex items-center justify-between px-3 py-2 rounded-lg transition-all"
+      style={{
+        background: showBackbiting ? "rgba(255,255,255,0.04)" : "transparent",
+        border: "1px solid var(--hair2)",
+        cursor: "pointer",
+        fontFamily: "inherit",
+      }}
+    >
+      <span className="font-mono text-[10px] tracking-widest" style={{ color: "var(--fore)" }}>
+        What is backbiting?
+      </span>
+      <span className="font-mono text-[10px]" style={{ color: "var(--muted)" }}>
+        {showBackbiting ? "▾" : "▸"}
+      </span>
+    </button>
+    {showBackbiting && (
+      <motion.div
+        initial={{ opacity: 0, y: -4 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="mt-2 rounded-lg px-4 py-4"
+        style={{ background: "var(--void)", border: "1px solid var(--hair)" }}
+      >
+        <p className="text-[12px] leading-[1.7]" style={{ color: "var(--fore)" }}>
+          The Prophet ﷺ asked, "Do you know what backbiting is?" They said, "Allah and His Messenger know best." He said, "Mentioning your brother with something he dislikes." — Sahih Muslim
+        </p>
+      </motion.div>
+    )}
+  </div>
+)}
+
+</div>
 
                     {/* Checkbox */}
                     {hasCheckbox && (
@@ -324,22 +337,38 @@ async function handleAddCourse() {
                       {error && (
   <p className="font-mono text-[11px] mb-4" style={{ color: "#ff5f57" }}>{error}</p>
 )}
-                    <button
-                      onClick={handleSubmit}
-                      disabled={!canProceed || submitting}
-                      className="w-full rounded-lg py-3 text-[13px] font-semibold transition-opacity"
-                      style={{
-                        background: "var(--lumen-bright)",
-                        color: "var(--void)",
-                        border: "none",
-                        boxShadow: "var(--rim-inset)",
-                        cursor: canProceed && !submitting ? "pointer" : "not-allowed",
-                        opacity: canProceed && !submitting ? 1 : 0.4,
-                        fontFamily: "inherit",
-                      }}
-                    >
-                      {submitting ? "Submitting…" : "Continue →"}
-                    </button>
+                    <div className="flex gap-3">
+  <button
+    onClick={() => { setStep("form"); setChecked(false); }}
+    className="flex-1 rounded-lg py-3 text-[13px] font-medium transition-opacity"
+    style={{
+      background: "transparent",
+      color: "var(--fore)",
+      border: "1px solid var(--hair2)",
+      cursor: "pointer",
+      fontFamily: "inherit",
+    }}
+    onMouseEnter={(e) => (e.currentTarget.style.borderColor = "rgba(255,255,255,0.28)")}
+    onMouseLeave={(e) => (e.currentTarget.style.borderColor = "var(--hair2)")}
+  >
+    ← Edit review
+  </button>
+  <button
+    onClick={handleSubmit}
+    disabled={!canProceed || submitting}
+    className="flex-1 rounded-lg py-3 text-[13px] font-semibold transition-opacity"
+    style={{
+      background: "var(--lumen-bright)",
+      color: "var(--void)",
+      border: "none",
+      cursor: canProceed && !submitting ? "pointer" : "not-allowed",
+      opacity: canProceed && !submitting ? 1 : 0.4,
+      fontFamily: "inherit",
+    }}
+  >
+    {submitting ? "Submitting…" : "Submit →"}
+  </button>
+</div>
                   </motion.div>
                 )}
 
