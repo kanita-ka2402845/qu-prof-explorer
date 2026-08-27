@@ -302,11 +302,6 @@ async function handleAddCourse() {
                       )}
                     </div>
 
-                    {/* Self-reminder */}
-                    <p className="text-[12px] mb-6 leading-relaxed" style={{ color: "var(--muted)" }}>
-                      This reminder is for me before it is for you.
-                    </p>
-
                     {/* Checkbox */}
                     {hasCheckbox && (
                       <div
