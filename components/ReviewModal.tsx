@@ -140,36 +140,31 @@ export default function ReviewModal({ instructor, onClose, onSuccess }: Props) {
     setCustomTagInput("");
   }
 
-  async function handleSubmit() {
-    if (!session) return;
-    if (!courseId || !teachingStyle || wouldRetake === null ||
-        strictAtt === null || affectsGrade === null || body.trim().length < 30) {
-      setError("Please complete all required fields.");
-      return;
-    }
-    setError(null);
-    setSubmitting(true);
-    const { error } = await submitReview({
-      instructor_id: instructor.id,
-      course_id: courseId,
-      author_id: session.user.id,
-      body: body.trim(),
-      clarity,
-      exam_difficulty: examDiff,
-      would_retake: wouldRetake,
-      attendance_strict: strictAtt,
-      attendance_affects_grade: affectsGrade,
-      teaching_style: teachingStyle,
-      grade_received: gradeReceived || null,
-      semester,
-      semester_year: year,
-      conscience_level: conscienceLevel,
-      tag_ids: selectedTagIds,
-    });
-    setSubmitting(false);
-    if (error) { setError(error); return; }
-    setStep("success");
-  }
+async function handleSubmit() {
+  if (!session) return;
+  setError(null);
+  setSubmitting(true);
+  const { error } = await submitReview({
+    instructor_id: instructor.id,
+    course_id: courseId,
+    author_id: session.user.id,
+    body: body.trim(),
+    clarity,
+    exam_difficulty: examDiff,
+    would_retake: wouldRetake!,
+    attendance_strict: strictAtt!,
+    attendance_affects_grade: affectsGrade!,
+    teaching_style: teachingStyle,
+    grade_received: gradeReceived || null,
+    semester,
+    semester_year: year,
+    conscience_level: conscienceLevel,
+    tag_ids: selectedTagIds,
+  });
+  setSubmitting(false);
+  if (error) { setError(error); return; }
+  setStep("success");
+}
 
 async function handleAddCourse() {
   if (!newCourseCode.trim()) return;
@@ -326,7 +321,9 @@ async function handleAddCourse() {
                         </span>
                       </div>
                     )}
-
+                      {error && (
+  <p className="font-mono text-[11px] mb-4" style={{ color: "#ff5f57" }}>{error}</p>
+)}
                     <button
                       onClick={handleSubmit}
                       disabled={!canProceed || submitting}
