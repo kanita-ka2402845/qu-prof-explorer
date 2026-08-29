@@ -59,10 +59,10 @@ export async function submitReview(review: ReviewInsert): Promise<{ error: strin
   const { tag_ids, ...reviewData } = review;
 
   const { data, error } = await supabase
-    .from("reviews")
-    .insert(reviewData)
-    .select("id")
-    .single();
+  .from("reviews")
+  .insert({ ...reviewData, is_approved: true })
+  .select("id")
+  .single();
 
   if (error) return { error: error.message };
 

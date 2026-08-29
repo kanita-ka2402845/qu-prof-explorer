@@ -8,6 +8,7 @@ import { X } from "lucide-react";
 import leoProfanity from "leo-profanity";
 
 import { getUserReviewCount, getTags, createCustomTag, submitReview, addCourseToInstructor } from "@/lib/queries";
+import { supabase } from "@/lib/supabase";
 
 type Props = {
   instructor: FullInstructor;
@@ -144,6 +145,7 @@ async function handleSubmit() {
   if (!session) return;
   setError(null);
   setSubmitting(true);
+
   const { error } = await submitReview({
     instructor_id: instructor.id,
     course_id: courseId,
