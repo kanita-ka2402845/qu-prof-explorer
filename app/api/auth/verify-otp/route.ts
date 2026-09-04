@@ -17,7 +17,7 @@ export async function POST(req: NextRequest) {
   const { data: sessionData, error } = await supabasePublic.auth.verifyOtp({
     email,
     token: code,
-    type: "magiclink",
+    type: "email",
   });
 
   if (error || !sessionData.session) {
