@@ -18,17 +18,7 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  // Use signInWithOtp — generates token with full expiry window
-  const { error: otpError } = await supabaseAdmin.auth.signInWithOtp({
-    email,
-    options: { shouldCreateUser: true }
-  });
-
-  if (otpError) {
-    return NextResponse.json({ error: otpError.message }, { status: 500 });
-  }
-
-  // Generate link separately just to get the email_otp code
+  // Single source of truth for the token — generateLink does NOT send an email itself
   const { data: linkData, error: linkError } = await supabaseAdmin.auth.admin.generateLink({
     type: "magiclink",
     email,

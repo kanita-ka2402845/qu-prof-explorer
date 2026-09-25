@@ -15,10 +15,10 @@ export async function POST(req: NextRequest) {
   const { email, code } = await req.json();
 
   const { data: sessionData, error } = await supabasePublic.auth.verifyOtp({
-    email,
-    token: code,
-    type: "email",
-  });
+  email,
+  token: code,
+  type: "magiclink",
+});
 
   if (error || !sessionData.session) {
     return NextResponse.json({ error: error?.message || "Invalid or expired code." }, { status: 400 });
