@@ -46,7 +46,6 @@ export type ReviewInsert = {
   exam_difficulty: number;
   would_retake: boolean;
   attendance_strict: boolean;
-  attendance_affects_grade: boolean;
   teaching_style: string;
   grade_received: string | null;
   semester: string;

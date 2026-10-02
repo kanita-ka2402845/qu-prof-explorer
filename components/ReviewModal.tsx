@@ -85,7 +85,6 @@ export default function ReviewModal({ instructor, onClose, onSuccess }: Props) {
   const [teachingStyle, setTeachingStyle]   = useState("");
   const [wouldRetake, setWouldRetake]       = useState<boolean | null>(null);
   const [strictAtt, setStrictAtt]           = useState<boolean | null>(null);
-  const [affectsGrade, setAffectsGrade]     = useState<boolean | null>(null);
   const [body, setBody]                     = useState("");
   const [gradeReceived, setGradeReceived]   = useState("");
   const [profanityWarning, setProfanityWarning] = useState(false);
@@ -155,7 +154,6 @@ async function handleSubmit() {
     exam_difficulty: examDiff,
     would_retake: wouldRetake!,
     attendance_strict: strictAtt!,
-    attendance_affects_grade: affectsGrade!,
     teaching_style: teachingStyle,
     grade_received: gradeReceived || null,
     semester,
@@ -684,7 +682,7 @@ async function handleAddCourse() {
 
                       {/* Body */}
                       <div className="flex flex-col gap-3">
-                        <FieldLabel>Your Review <span style={{ color: "var(--muted)", fontWeight: 400 }}>— required</span></FieldLabel>
+                        <FieldLabel>Your Review <span style={{ color: "var(--muted)", fontWeight: 400 }}>— at least 20 characters required</span></FieldLabel>
                         <textarea
                           value={body}
                           onChange={(e) => { setBody(e.target.value); setProfanityWarning(false); }}
