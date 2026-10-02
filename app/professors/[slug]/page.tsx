@@ -39,7 +39,6 @@ export type Review = {
   exam_difficulty: number;
   would_retake: boolean;
   attendance_strict: boolean;
-  attendance_affects_grade: boolean;
   teaching_style: string | null;
   grade_received: string | null;
   semester: string;
@@ -91,7 +90,7 @@ export default function ProfessorPage() {
       .from("reviews")
       .select(`
         id, body, clarity, exam_difficulty, would_retake,
-        attendance_strict, attendance_affects_grade, teaching_style,
+        attendance_strict, teaching_style,
         grade_received, semester, semester_year, helpful_count, created_at,
         courses(code),
         review_tags(tags(label))
