@@ -741,7 +741,7 @@ async function handleAddCourse() {
                       <button
                         onClick={() => {
                           if (!courseId || !teachingStyle || wouldRetake === null ||
-                              strictAtt === null || affectsGrade === null || body.trim().length < 30) {
+                              strictAtt === null || body.trim().length < 20) {
                             setError("Please complete all required fields.");
                             return;
                           }
