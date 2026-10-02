@@ -216,12 +216,6 @@ function ReviewCard({ review, idx, voted, helpfulCount, onVote }: CardProps) {
     {review.attendance_strict ? "Strict" : "Lax"}
   </span>
 </div>
-<div className="flex flex-col gap-[2px]">
-  <span className="font-mono text-[9px] uppercase tracking-widest" style={{ color: "var(--muted)" }}>Affects grade</span>
-  <span className="text-[12px] font-semibold" style={{ color: review.attendance_affects_grade ? "var(--lumen-bright)" : "var(--fore)" }}>
-    {review.attendance_affects_grade ? "Yes" : "No"}
-  </span>
-</div>
       </div>
 
       {review.teaching_style && (

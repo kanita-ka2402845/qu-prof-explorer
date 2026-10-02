@@ -586,8 +586,7 @@ async function handleAddCourse() {
                         <FieldLabel>Quick Questions</FieldLabel>
                         {[
                           { label: "Would you take this professor again?", state: wouldRetake, set: setWouldRetake },
-                          { label: "Strict with attendance?",              state: strictAtt,   set: setStrictAtt },
-                          { label: "Does attendance affect your grade?",   state: affectsGrade, set: setAffectsGrade },
+                          { label: "Strict with attendance?",              state: strictAtt,   set: setStrictAtt }
                         ].map(({ label, state, set }) => (
                           <div key={label} className="flex items-center justify-between gap-4">
                             <span className="text-[12px]" style={{ color: "var(--fore)" }}>{label}</span>
@@ -655,7 +654,7 @@ async function handleAddCourse() {
                               value={customTagInput}
                               onChange={(e) => setCustomTagInput(e.target.value)}
                               onKeyDown={(e) => e.key === "Enter" && handleAddCustomTag()}
-                              maxLength={30}
+                              maxLength={20}
                               className="flex-1 rounded px-3 py-2 text-[16px] sm:text-[12px] outline-none"
                               style={{
                                 background: "var(--void)",
