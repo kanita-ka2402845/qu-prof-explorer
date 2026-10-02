@@ -285,3 +285,21 @@ export async function getHeroStats(): Promise<{
     colleges: colleges ?? 0,
   };
 }
+
+export async function getMostChosenTag(instructorId: string): Promise<string | null> {
+  const { data } = await supabase
+    .from("review_tags")
+    .select("tags(label), reviews!inner(instructor_id)")
+    .eq("reviews.instructor_id", instructorId);
+
+  if (!data || data.length === 0) return null;
+
+  const counts: Record<string, number> = {};
+  data.forEach((row: any) => {
+    const label = row.tags?.label;
+    if (label) counts[label] = (counts[label] || 0) + 1;
+  });
+
+  const sorted = Object.entries(counts).sort((a, b) => b[1] - a[1]);
+  return sorted[0]?.[0] ?? null;
+}

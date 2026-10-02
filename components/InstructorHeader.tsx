@@ -1,6 +1,7 @@
 "use client";
 import type { FullInstructor } from "@/app/professors/[slug]/page";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { getMostChosenTag } from "@/lib/queries";
 import SuggestModal from "./SuggestModal";
 
 const STYLE_LABELS: Record<string, string> = {
@@ -31,6 +32,12 @@ export default function InstructorHeader({ instructor: inst }: Props) {
     inst.grade_barely_pass + inst.grade_retook;
 
   const courseCodes = inst.courses?.map((c) => c.code).join(" · ") || "";
+
+  const [mostTag, setMostTag] = useState<string | null>(null);
+
+useEffect(() => {
+  getMostChosenTag(inst.id).then(setMostTag);
+}, [inst.id]);
 
   return (
     <section className="px-4 sm:px-8 py-6 sm:py-8 w-full min-w-0">
@@ -119,8 +126,10 @@ export default function InstructorHeader({ instructor: inst }: Props) {
             value: retakePct !== null ? `${retakePct}%` : "—",
           },
           {
-            label: "Strict attendance",
-            value: strictPct !== null ? `${strictPct}% say yes` : "—",
+            
+  label: "Most mentioned",
+  value: mostTag ?? "—",
+
           },
           ...(inst.top_teaching_style ? [{
             label: "Teaching style",
