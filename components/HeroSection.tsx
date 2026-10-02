@@ -29,7 +29,7 @@ export default function HeroSection({ onDiveIn }: Props) {
   className="font-mono text-[10px] tracking-[0.18em] uppercase mb-5"
   style={{ color: "var(--muted)" }}
 >
-  — Qatar University · Know before you register
+  — Qatar University · Know your professors 
 </p>
 
 <h1
