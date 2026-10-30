@@ -43,6 +43,11 @@ export default function InstructorWindow({ departmentId, departmentName, college
   const courseList = (inst: Instructor) =>
     inst.courses?.map((c) => c.code).join(", ") ?? "—";
 
+  const goToInstructor = (inst: Instructor) =>
+  router.push(
+    `/professors/${inst.slug}?college=${encodeURIComponent(collegeSlug)}&dept=${encodeURIComponent(departmentId)}&collegeName=${encodeURIComponent(collegeName)}&deptName=${encodeURIComponent(departmentName)}`
+  );
+
   return (
     <motion.section
       initial={{ opacity: 0, y: -6 }}
@@ -124,6 +129,8 @@ export default function InstructorWindow({ departmentId, departmentName, college
                 }}
                 onMouseEnter={(e) => ((e.currentTarget as HTMLDivElement).style.background = "var(--panel)")}
                 onMouseLeave={(e) => ((e.currentTarget as HTMLDivElement).style.background = "transparent")}
+
+                onClick={() => goToInstructor(inst)}
               >
                 <div>
                   <p className="text-[13px] font-medium" style={{ color: "var(--lumen)" }}>
@@ -157,7 +164,7 @@ export default function InstructorWindow({ departmentId, departmentName, college
                       (e.currentTarget as HTMLButtonElement).style.color = "var(--muted)";
                       (e.currentTarget as HTMLButtonElement).style.borderColor = "var(--hair2)";
                     }}
-                    onClick={() => router.push(`/professors/${inst.slug}?college=${encodeURIComponent(collegeSlug)}&dept=${encodeURIComponent(departmentId)}&collegeName=${encodeURIComponent(collegeName)}&deptName=${encodeURIComponent(departmentName)}`)}
+                    onClick={(e) => { e.stopPropagation(); goToInstructor(inst); }}
                   >
                     View ↗
                   </button>

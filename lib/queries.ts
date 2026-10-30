@@ -301,4 +301,23 @@ export async function getMostChosenTag(instructorId: string): Promise<string | n
 
   const sorted = Object.entries(counts).sort((a, b) => b[1] - a[1]);
   return sorted[0]?.[0] ?? null;
+
+}
+
+export async function getTeachingStyles(): Promise<{ value: string; label: string }[]> {
+  const { data } = await supabase
+    .from("teaching_styles")
+    .select("value, label")
+    .order("is_custom")
+    .order("label");
+  return data ?? [];
+}
+
+export async function createTeachingStyle(label: string): Promise<{ value: string; label: string } | null> {
+  const { data } = await supabase
+    .from("teaching_styles")
+    .insert({ value: label, label, is_custom: true })
+    .select("value, label")
+    .single();
+  return data;
 }

@@ -7,6 +7,7 @@ import InstructorHeader from "@/components/InstructorHeader";
 import AuthModal from "@/components/AuthModal";
 import { useAuth } from "@/components/AuthContext";
 import ReviewModal from "@/components/ReviewModal";
+import FeedbackModal from "@/components/FeedbackModal";
 
 export type FullInstructor = {
   id: string;
@@ -66,6 +67,8 @@ export default function ProfessorPage() {
   const { session } = useAuth();
   const [showAuth, setShowAuth] = useState(false);
   const [showReviewModal, setShowReviewModal] = useState(false);
+
+  const [showFeedback, setShowFeedback] = useState(false);
 
   const fetchInstructorAndReviews = useCallback(async () => {
     if (!slug) return;
@@ -179,9 +182,26 @@ export default function ProfessorPage() {
         />
 
         <div className="horizon-line mt-2 mb-6 mx-4 sm:mx-8" style={{ opacity: 0.5 }} />
-        <p className="font-mono text-[10px] text-center pb-6 tracking-widest px-4" style={{ color: "var(--muted)" }}>
-          QU PROF EXPLORER · V 1.0 · FOR STUDENTS, BY STUDENTS
-        </p>
+        <p className="font-mono text-[10px] text-center pb-6 tracking-widest" style={{ color: "var(--muted)" }}>
+  QU PROF EXPLORER · V 1.0 · FOR STUDENTS, BY STUDENTS ·{" "}
+  <button
+    onClick={() => setShowFeedback(true)}
+    className="underline"
+    style={{
+      color: "var(--muted)", background: "transparent", border: "none",
+      cursor: "pointer", fontFamily: "inherit", fontSize: "inherit",
+      letterSpacing: "inherit", textUnderlineOffset: "3px",
+    }}
+    onMouseEnter={(e) => (e.currentTarget.style.color = "var(--lumen)")}
+    onMouseLeave={(e) => (e.currentTarget.style.color = "var(--muted)")}
+  >
+    SUGGEST AN IMPROVEMENT
+  </button>
+</p>
+
+{showFeedback && <FeedbackModal onClose={() => setShowFeedback(false)} />}
+
+
       </div>
 
       {showAuth && (
@@ -206,6 +226,8 @@ export default function ProfessorPage() {
           }}
         />
       )}
+
+     
     </main>
   );
 }

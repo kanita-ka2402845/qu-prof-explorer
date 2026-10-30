@@ -6,6 +6,7 @@ import HeroSection from "@/components/HeroSection";
 import CollegeStrip from "@/components/CollegeStrip";
 import DeptGrid from "@/components/DeptGrid";
 import InstructorWindow from "@/components/InstructorWindow";
+import FeedbackModal from "@/components/FeedbackModal";
 
 type CollegeState = { id: string; slug: string; name: string };
 type DeptState    = { id: string; name: string };
@@ -15,6 +16,7 @@ function HomeInner() {
   const [showColleges, setShowColleges] = useState(false);
   const [college, setCollege] = useState<CollegeState | null>(null);
   const [dept, setDept]       = useState<DeptState | null>(null);
+  const [showFeedback, setShowFeedback] = useState(false);
 
   const collegeRef = useRef<HTMLDivElement>(null);
   const deptRef    = useRef<HTMLDivElement>(null);
@@ -107,9 +109,25 @@ function HomeInner() {
 
         <div className="horizon-line mt-2 mb-6 mx-8" style={{ opacity: 0.5 }} />
         <p className="font-mono text-[10px] text-center pb-6 tracking-widest" style={{ color: "var(--muted)" }}>
-          QU PROF EXPLORER · V 1.0 · FOR STUDENTS, BY STUDENTS
-        </p>
-      </div>
+  QU PROF EXPLORER · V 1.0 · FOR STUDENTS, BY STUDENTS ·{" "}
+  <button
+    onClick={() => setShowFeedback(true)}
+    className="underline"
+    style={{
+      color: "var(--muted)", background: "transparent", border: "none",
+      cursor: "pointer", fontFamily: "inherit", fontSize: "inherit",
+      letterSpacing: "inherit", textUnderlineOffset: "3px",
+    }}
+    onMouseEnter={(e) => (e.currentTarget.style.color = "var(--lumen)")}
+    onMouseLeave={(e) => (e.currentTarget.style.color = "var(--muted)")}
+  >
+    SUGGEST AN IMPROVEMENT
+  </button>
+</p>
+
+{showFeedback && <FeedbackModal onClose={() => setShowFeedback(false)} />}
+    
+    </div>
     </main>
   );
 }

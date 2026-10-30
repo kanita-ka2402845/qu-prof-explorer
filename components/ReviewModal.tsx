@@ -7,7 +7,7 @@ import { X } from "lucide-react";
 
 import leoProfanity from "leo-profanity";
 
-import { getUserReviewCount, getTags, createCustomTag, submitReview, addCourseToInstructor } from "@/lib/queries";
+import { getUserReviewCount, getTags, createCustomTag, submitReview, addCourseToInstructor, getTeachingStyles, createTeachingStyle } from "@/lib/queries";
 import { supabase } from "@/lib/supabase";
 
 type Props = {
@@ -96,6 +96,10 @@ export default function ReviewModal({ instructor, onClose, onSuccess }: Props) {
   const [newCourseCode, setNewCourseCode] = useState("");
   const [addingCourse, setAddingCourse]   = useState(false);
 
+  const [styles, setStyles] = useState(TEACHING_STYLES);
+const [showStyleAdd, setShowStyleAdd] = useState(false);
+const [newStyle, setNewStyle] = useState("");
+
   useEffect(() => {
     async function init() {
       if (!session) return;
@@ -106,6 +110,7 @@ export default function ReviewModal({ instructor, onClose, onSuccess }: Props) {
       const level = Math.min(count + 1, 5);
       setConscienceLevel(level);
       setAvailableTags(tags);
+      getTeachingStyles().then((s) => s.length && setStyles(s));
       setLoading(false);
     }
     init();
@@ -177,6 +182,21 @@ async function handleAddCourse() {
     setShowAddCourse(false);
     setNewCourseCode("");
   }
+}
+
+async function handleAddStyle() {
+  const label = newStyle.trim();
+  if (label.length < 3) return;
+  const existing = styles.find((s) => s.label.toLowerCase() === label.toLowerCase());
+  if (existing) { setTeachingStyle(existing.value); setNewStyle(""); setShowStyleAdd(false); return; }
+  if (leoProfanity.check(label)) return;
+  const created = await createTeachingStyle(label);
+  if (created) {
+    setStyles((prev) => [...prev, created]);
+    setTeachingStyle(created.value);
+  }
+  setNewStyle("");
+  setShowStyleAdd(false);
 }
 
   const ref = CONSCIENCE_LEVELS[Math.min(conscienceLevel, 5) - 1] || CONSCIENCE_LEVELS[0];
@@ -558,7 +578,7 @@ async function handleAddCourse() {
                       <div className="flex flex-col gap-3">
                         <FieldLabel>Teaching Style</FieldLabel>
                         <div className="flex flex-wrap gap-2">
-                          {TEACHING_STYLES.map((ts) => (
+                          {styles.map((ts) => (
                             <button
                               key={ts.value}
                               onClick={() => setTeachingStyle(ts.value)}
@@ -574,6 +594,35 @@ async function handleAddCourse() {
                               {ts.label}
                             </button>
                           ))}
+                          {showStyleAdd ? (
+                              <div className="flex gap-2">
+                                <input
+                                  type="text"
+                                  placeholder="e.g. QnA Heavy"
+                                  value={newStyle}
+                                  onChange={(e) => setNewStyle(e.target.value)}
+                                  onKeyDown={(e) => e.key === "Enter" && handleAddStyle()}
+                                  maxLength={30}
+                                  className="flex-1 rounded px-3 py-2 text-[16px] sm:text-[12px] outline-none"
+                                  style={{ background: "var(--void)", border: "1px solid var(--hair2)", color: "var(--lumen-bright)", fontFamily: "inherit" }}
+                                />
+                                <button
+                                  onClick={handleAddStyle}
+                                  className="font-mono text-[10px] px-3 py-2 rounded"
+                                  style={{ background: "transparent", border: "1px solid var(--hair2)", color: "var(--muted)", cursor: "pointer", fontFamily: "inherit" }}
+                                >
+                                  + Add
+                                </button>
+                              </div>
+                            ) : (
+                              <button
+                                onClick={() => setShowStyleAdd(true)}
+                                className="font-mono text-[10px] tracking-widest text-left"
+                                style={{ color: "var(--muted)", background: "transparent", border: "none", cursor: "pointer", fontFamily: "inherit", textDecoration: "underline", textUnderlineOffset: "3px" }}
+                              >
+                                + Add a teaching style
+                              </button>
+                            )}
                         </div>
                       </div>
 

@@ -28,13 +28,18 @@ export default function AuthModal({ onClose, onSuccess }: Props) {
   }, []);
 
   async function handleEmailSubmit() {
-    setError(null);
-    setLoading(true);
-    const { error } = await sendOTP(email.trim().toLowerCase());
-    setLoading(false);
-    if (error) { setError(error); return; }
-    setStep("otp");
+  const clean = email.trim().toLowerCase();
+  if (!clean.endsWith("@qu.edu.qa")) {
+    setError("Please enter your QU email address (@qu.edu.qa).");
+    return;
   }
+  setError(null);
+  setLoading(true);
+  const { error } = await sendOTP(clean);
+  setLoading(false);
+  if (error) { setError(error); return; }
+  setStep("otp");
+}
 
   async function handleOTPSubmit() {
     setError(null);

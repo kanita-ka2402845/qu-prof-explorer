@@ -83,6 +83,8 @@ export default function ReviewMosaic({ reviews, instructorId, onWriteReview }: P
           <p className="font-mono text-[11px] tracking-widest mb-6" style={{ color: "var(--muted)" }}>
             NO REVIEWS YET. BE THE FIRST TO HELP SOMEONE.
           </p>
+
+          <div className="mb-6"><CharityNote /></div>
           <button
             className="font-mono text-[11px] tracking-widest px-6 py-3 rounded-lg transition-opacity hover:opacity-85"
             style={{
@@ -93,7 +95,8 @@ export default function ReviewMosaic({ reviews, instructorId, onWriteReview }: P
               cursor: "pointer",
             }}
             onClick={onWriteReview}
-          >
+          >   
+
             WRITE A REVIEW ↗
           </button>
         </div>
@@ -119,9 +122,14 @@ export default function ReviewMosaic({ reviews, instructorId, onWriteReview }: P
             className="mt-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 px-6 py-4 rounded-lg"
             style={{ border: "1px solid var(--hair)", background: "var(--graph)" }}
           >
-            <p className="text-[13px]" style={{ color: "var(--fore)" }}>
-              Took a course with this instructor?
-            </p>
+            <div className="flex flex-col gap-1">
+                <p className="text-[13px]" style={{ color: "var(--fore)" }}>
+                  Took a course with this instructor?
+                </p>
+                <CharityNote />
+            </div>
+
+            
             <button
               className="font-mono text-[11px] tracking-widest px-5 py-[8px] rounded-md transition-opacity hover:opacity-85 w-full sm:w-auto text-center"
               style={{
@@ -330,4 +338,12 @@ function getTimeAgo(dateStr: string): string {
   if (days < 7)   return `${days}d ago`;
   if (weeks < 5)  return `${weeks}w ago`;
   return `${months}mo ago`;
+}
+
+function CharityNote() {
+  return (
+    <p className="font-mono text-[10px] tracking-widest" style={{ color: "var(--fore)" }}>
+      For every review written here, I donate 10 QAR to Qatar Charity.
+    </p>
+  );
 }
