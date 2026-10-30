@@ -6,10 +6,8 @@ import { X } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import { useAuth } from "@/components/AuthContext";
 
-type Mode = "suggest" | "correct";
-
 type Props = {
-  mode: Mode;
+  mode?: "correct";
   instructorId?: string;
   instructorName?: string;
   onClose: () => void;
@@ -23,53 +21,20 @@ const ISSUE_TYPES = [
   { value: "other",             label: "Something else" },
 ];
 
-export default function SuggestModal({ mode, instructorId, instructorName, onClose }: Props) {
+export default function SuggestModal({ instructorId, instructorName, onClose }: Props) {
   const { session } = useAuth();
   const [submitted, setSubmitted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
-
-  // Suggest form state
-  const [suggestName, setSuggestName]       = useState("");
-  const [suggestDept, setSuggestDept]       = useState("");
-  const [suggestCollege, setSuggestCollege] = useState("");
-  const [suggestNotes, setSuggestNotes]     = useState("");
-
-  // Correct form state
-  const [issueType, setIssueType]           = useState("");
+  const [issueType, setIssueType] = useState("");
   const [correctDetails, setCorrectDetails] = useState("");
 
-  // Prevent body background scroll on mobile when modal is open
   useEffect(() => {
     document.body.style.overflow = "hidden";
     return () => {
       document.body.style.overflow = "unset";
     };
   }, []);
-
-  async function handleSuggest() {
-    setError(null);
-    if (!suggestName.trim() || !suggestDept.trim() || !suggestCollege.trim()) {
-      setError("Please fill in name, department, and college.");
-      return;
-    }
-    setSubmitting(true);
-    try {
-      const { error: dbError } = await supabase.from("professor_suggestions").insert({
-        suggested_by: session?.user?.id ?? null,
-        full_name: suggestName.trim(),
-        department: suggestDept.trim(),
-        college: suggestCollege.trim(),
-        notes: suggestNotes.trim() || null,
-      });
-      if (dbError) throw dbError;
-      setSubmitted(true);
-    } catch (err: any) {
-      setError(err.message || "An unexpected error occurred. Please try again.");
-    } finally {
-      setSubmitting(false);
-    }
-  }
 
   async function handleCorrect() {
     setError(null);
@@ -97,7 +62,6 @@ export default function SuggestModal({ mode, instructorId, instructorName, onClo
   return (
     <AnimatePresence>
       <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 overflow-y-auto">
-        {/* Backdrop */}
         <motion.div
           key="backdrop"
           initial={{ opacity: 0 }}
@@ -108,7 +72,6 @@ export default function SuggestModal({ mode, instructorId, instructorName, onClo
           onClick={onClose}
         />
 
-        {/* Modal Window */}
         <motion.div
           key="modal"
           initial={{ opacity: 0, y: 16, scale: 0.97 }}
@@ -126,7 +89,6 @@ export default function SuggestModal({ mode, instructorId, instructorName, onClo
               boxShadow: "0 32px 80px rgba(0,0,0,0.6)",
             }}
           >
-            {/* Title bar - Sticky header */}
             <div
               className="flex items-center justify-between px-4 sm:px-5 py-3 sm:py-4 shrink-0"
               style={{ borderBottom: "1px solid var(--hair)", background: "var(--panel)" }}
@@ -136,15 +98,11 @@ export default function SuggestModal({ mode, instructorId, instructorName, onClo
                   <span key={c} className="w-[9px] h-[9px] rounded-full" style={{ background: c }} />
                 ))}
               </div>
-              
               <span className="font-mono text-[10px] sm:text-[11px] tracking-widest truncate mx-2 text-center" style={{ color: "var(--muted)" }}>
-                {mode === "suggest" 
-                  ? "SUGGEST A PROFESSOR" 
-                  : `REPORT AN ISSUE · ${(instructorName || "INSTRUCTOR").toUpperCase()}`}
+                {`REPORT AN ISSUE · ${(instructorName || "INSTRUCTOR").toUpperCase()}`}
               </span>
-
-              <button 
-                onClick={onClose} 
+              <button
+                onClick={onClose}
                 aria-label="Close modal"
                 className="p-1 rounded transition-colors hover:opacity-80"
                 style={{ background: "transparent", border: "none", cursor: "pointer", color: "var(--muted)" }}
@@ -153,7 +111,6 @@ export default function SuggestModal({ mode, instructorId, instructorName, onClo
               </button>
             </div>
 
-            {/* Scrollable Content Body */}
             <div className="px-4 sm:px-6 py-5 sm:py-6 overflow-y-auto flex-1">
               {submitted ? (
                 <div className="text-center py-6">
@@ -165,77 +122,14 @@ export default function SuggestModal({ mode, instructorId, instructorName, onClo
                     Signal received.
                   </p>
                   <p className="text-[13px] leading-relaxed" style={{ color: "var(--fore)" }}>
-                    {mode === "suggest"
-                      ? "We'll review your suggestion and add them if confirmed."
-                      : "We'll look into this and update the info if needed."}
+                    We'll look into this and update the info if needed.
                   </p>
                   <button
                     onClick={onClose}
                     className="font-mono text-[11px] tracking-widest mt-6 px-6 py-2.5 rounded-lg active:scale-95 transition-transform"
-                    style={{
-                      background: "var(--lumen-bright)", color: "var(--void)",
-                      border: "none", cursor: "pointer", fontFamily: "inherit",
-                    }}
+                    style={{ background: "var(--lumen-bright)", color: "var(--void)", border: "none", cursor: "pointer", fontFamily: "inherit" }}
                   >
                     CLOSE ↗
-                  </button>
-                </div>
-              ) : mode === "suggest" ? (
-                <div className="flex flex-col gap-4">
-                  <p className="text-[13px]" style={{ color: "var(--fore)" }}>
-                    Can't find a professor? Let us know and we'll add them.
-                  </p>
-
-                  <div className="flex flex-col gap-1.5">
-                    <FieldLabel>Professor name <Req /></FieldLabel>
-                    <input
-                      type="text" placeholder="e.g. Dr. Ahmed Al-Rashid"
-                      value={suggestName} onChange={(e) => setSuggestName(e.target.value)}
-                      style={inputStyle}
-                    />
-                  </div>
-
-                  <div className="flex flex-col gap-1.5">
-                    <FieldLabel>Department <Req /></FieldLabel>
-                    <input
-                      type="text" placeholder="e.g. Computer Science"
-                      value={suggestDept} onChange={(e) => setSuggestDept(e.target.value)}
-                      style={inputStyle}
-                    />
-                  </div>
-
-                  <div className="flex flex-col gap-1.5">
-                    <FieldLabel>College <Req /></FieldLabel>
-                    <input
-                      type="text" placeholder="e.g. Engineering"
-                      value={suggestCollege} onChange={(e) => setSuggestCollege(e.target.value)}
-                      style={inputStyle}
-                    />
-                  </div>
-
-                  <div className="flex flex-col gap-1.5">
-                    <FieldLabel>
-                      Anything else? <span style={{ color: "var(--muted)", fontWeight: 400 }}>— optional</span>
-                    </FieldLabel>
-                    <textarea
-                      placeholder="Courses they teach, title, etc."
-                      value={suggestNotes} onChange={(e) => setSuggestNotes(e.target.value)}
-                      rows={2} style={{ ...inputStyle, resize: "none" }}
-                    />
-                  </div>
-
-                  {error && <p className="font-mono text-[11px] mt-1" style={{ color: "#ff5f57" }}>{error}</p>}
-
-                  <button
-                    onClick={handleSuggest} disabled={submitting}
-                    className="w-full rounded-lg py-3 mt-2 text-[13px] font-semibold transition-opacity active:scale-[0.99]"
-                    style={{
-                      background: "var(--lumen-bright)", color: "var(--void)",
-                      border: "none", cursor: submitting ? "not-allowed" : "pointer",
-                      opacity: submitting ? 0.6 : 1, fontFamily: "inherit",
-                    }}
-                  >
-                    {submitting ? "Submitting..." : "Submit suggestion →"}
                   </button>
                 </div>
               ) : (
@@ -272,19 +166,22 @@ export default function SuggestModal({ mode, instructorId, instructorName, onClo
                     </FieldLabel>
                     <textarea
                       placeholder="Tell us what's wrong and what it should be…"
-                      value={correctDetails} onChange={(e) => setCorrectDetails(e.target.value)}
-                      rows={3} style={{ ...inputStyle, resize: "none" }}
+                      value={correctDetails}
+                      onChange={(e) => setCorrectDetails(e.target.value)}
+                      rows={3}
+                      style={{ ...inputStyle, resize: "none" }}
                     />
                   </div>
 
                   {error && <p className="font-mono text-[11px] mt-1" style={{ color: "#ff5f57" }}>{error}</p>}
 
                   <button
-                    onClick={handleCorrect} disabled={submitting}
+                    onClick={handleCorrect}
+                    disabled={submitting}
                     className="w-full rounded-lg py-3 mt-2 text-[13px] font-semibold transition-opacity active:scale-[0.99]"
                     style={{
-                      background: "var(--lumen-bright)", color: "var(--void)",
-                      border: "none", cursor: submitting ? "not-allowed" : "pointer",
+                      background: "var(--lumen-bright)", color: "var(--void)", border: "none",
+                      cursor: submitting ? "not-allowed" : "pointer",
                       opacity: submitting ? 0.6 : 1, fontFamily: "inherit",
                     }}
                   >

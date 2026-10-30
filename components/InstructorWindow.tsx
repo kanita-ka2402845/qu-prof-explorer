@@ -5,7 +5,9 @@ import { Search } from "lucide-react";
 import { getInstructorsByDepartment } from "@/lib/queries";
 import type { Instructor } from "@/lib/data";
 import { useRouter } from "next/navigation";
-import SuggestModal from "./SuggestModal";
+import { useAuth } from "@/components/AuthContext";
+import AuthModal from "./AuthModal";
+import AddInstructorModal from "./AddInstructorModal";
 
 
 
@@ -21,7 +23,9 @@ export default function InstructorWindow({ departmentId, departmentName, college
   const [loading, setLoading] = useState(true);
   const [query, setQuery] = useState("");
   const router = useRouter();
-  const [showSuggest, setShowSuggest] = useState(false);
+  const { session } = useAuth();
+const [showAdd, setShowAdd] = useState(false);
+const [showAuth, setShowAuth] = useState(false);
 
   useEffect(() => {
     setLoading(true);
@@ -178,7 +182,7 @@ export default function InstructorWindow({ departmentId, departmentName, college
   style={{ borderTop: "1px solid var(--hair)" }}
 >
   <button
-    onClick={() => setShowSuggest(true)}
+    onClick={() => (session ? setShowAdd(true) : setShowAuth(true))}
     className="font-mono text-[10px] tracking-widest transition-colors"
     style={{
       color: "var(--muted)", background: "transparent",
@@ -187,12 +191,23 @@ export default function InstructorWindow({ departmentId, departmentName, college
     onMouseEnter={(e) => (e.currentTarget.style.color = "var(--lumen)")}
     onMouseLeave={(e) => (e.currentTarget.style.color = "var(--muted)")}
   >
-    + Suggest a missing professor
+    + Add a missing professor
   </button>
 </div>
 
-{showSuggest && (
-  <SuggestModal mode="suggest" onClose={() => setShowSuggest(false)} />
+{showAuth && (
+  <AuthModal
+    onClose={() => setShowAuth(false)}
+    onSuccess={() => { setShowAuth(false); setShowAdd(true); }}
+  />
+)}
+{showAdd && (
+  <AddInstructorModal
+    departmentId={departmentId}
+    departmentName={departmentName}
+    onClose={() => setShowAdd(false)}
+    onDone={(slug) => { setShowAdd(false); goToInstructor({ slug } as Instructor); }}
+  />
 )}
       </div>
     </motion.section>

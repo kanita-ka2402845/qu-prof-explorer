@@ -321,3 +321,36 @@ export async function createTeachingStyle(label: string): Promise<{ value: strin
     .single();
   return data;
 }
+
+function slugify(s: string) {
+  return s.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+}
+
+export async function addInstructor(params: {
+  departmentId: string; name: string; userId: string;
+}): Promise<{ slug: string | null; existing: boolean; error: string | null }> {
+    const name = params.name.trim().replace(/\s+/g, " ")
+    .replace(/(^|[\s\-'’])([a-z])/g, (_, p, c) => p + c.toUpperCase());
+
+  const { data: dupes } = await supabase
+    .from("instructors").select("slug").ilike("full_name", `%${name}%`).limit(1);
+  if (dupes && dupes.length > 0) return { slug: dupes[0].slug, existing: true, error: null };
+
+  const base = slugify(name);
+  const { data: taken } = await supabase.from("instructors").select("slug").eq("slug", base);
+  const slug = taken && taken.length > 0
+    ? `${base}-${Math.floor(100 + Math.random() * 900)}` : base;
+
+    const { error } = await supabase.from("instructors").insert({
+    department_id: params.departmentId,
+    full_name: `Dr. ${name}`,
+    title: "Dr.",
+    slug,
+    is_user_added: true,
+    added_by: params.userId,
+  });
+
+  if (error) return { slug: null, existing: false, error: error.message };
+  return { slug, existing: false, error: null };
+}
