@@ -38,20 +38,16 @@ export default function FeedbackModal({ onClose }: Props) {
         style={{ background: "rgba(8,9,11,0.88)", backdropFilter: "blur(6px)" }}
         onClick={onClose}
       />
-      <motion.div
-        key="modal"
-        initial={{ opacity: 0, y: 16, scale: 0.97 }}
-        animate={{ opacity: 1, y: 0, scale: 1 }}
-        exit={{ opacity: 0, y: 16, scale: 0.97 }}
-        transition={{ duration: 0.25, ease: [0.15, 0.83, 0.66, 1] }}
-        className="fixed z-50"
-        style={{
-          width: "min(460px, calc(100vw - 24px))",
-          top: "50%", left: "50%",
-          transform: "translate(-50%, -50%)",
-        }}
-        onClick={(e) => e.stopPropagation()}
-      >
+        <div className="fixed inset-0 z-50 overflow-y-auto px-3 py-4 sm:p-6 flex justify-center items-start sm:items-center pointer-events-none">
+            <motion.div
+                key="modal"
+                initial={{ opacity: 0, y: 15 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: 15 }}
+                transition={{ duration: 0.2, ease: "easeOut" }}
+                className="pointer-events-auto w-full max-w-[460px] my-auto"
+                onClick={(e) => e.stopPropagation()}
+            >
         <div
           className="rounded-xl overflow-hidden"
           style={{
@@ -162,6 +158,7 @@ export default function FeedbackModal({ onClose }: Props) {
           <div className="horizon-line" />
         </div>
       </motion.div>
+      </div>
     </AnimatePresence>
   );
 }
