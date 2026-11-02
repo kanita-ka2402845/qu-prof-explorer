@@ -137,7 +137,9 @@ main {
   background: var(--horizon);
   position: relative;
   flex-shrink: 0;
+  overflow: hidden;
 }
+
 .horizon-pulse {
   position: absolute;
   inset: 0;
@@ -145,6 +147,7 @@ main {
   height: 1px;
   background: linear-gradient(90deg, transparent, var(--lumen-bright), transparent);
   animation: sweep 3.5s ease-in-out infinite;
+  display: none;
 }
 @keyframes sweep {
   0%   { left: -80px; opacity: 0; }
@@ -160,3 +163,17 @@ main {
 ::-webkit-scrollbar       { width: 4px; height: 4px; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: var(--hair2); border-radius: 2px; }
+
+html, body {
+  max-width: 100%;
+  overflow-x: clip;
+}
+html {
+  touch-action: manipulation;
+}
+
+@media (max-width: 640px) {
+  input, select, textarea {
+    font-size: 16px !important;
+  }
+}
