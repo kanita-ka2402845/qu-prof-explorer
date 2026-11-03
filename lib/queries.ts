@@ -63,7 +63,14 @@ export async function submitReview(review: ReviewInsert): Promise<{ error: strin
   .select("id")
   .single();
 
-  if (error) return { error: error.message };
+  if (error) {
+  if (error.code === "23505") {
+    return {
+      error: "You've already reviewed this professor's course for that semester. If you took it in a different semester, go back and change the semester.",
+    };
+  }
+  return { error: error.message };
+}
 
   if (tag_ids.length > 0) {
     await supabase.from("review_tags").insert(
