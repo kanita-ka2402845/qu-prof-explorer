@@ -29,6 +29,7 @@ export default function AuthModal({ onClose, onSuccess }: Props) {
 
   async function handleEmailSubmit() {
   const clean = email.trim().toLowerCase();
+  if (loading) return;
   if (!clean.endsWith("@qu.edu.qa")) {
     setError("Please enter your QU email address (@qu.edu.qa).");
     return;
@@ -42,6 +43,7 @@ export default function AuthModal({ onClose, onSuccess }: Props) {
 }
 
   async function handleOTPSubmit() {
+    if (loading) return;
     setError(null);
     setLoading(true);
     const { error } = await verifyOTP(email.trim().toLowerCase(), otp.trim());

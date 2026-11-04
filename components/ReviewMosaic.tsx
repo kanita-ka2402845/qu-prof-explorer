@@ -65,9 +65,6 @@ export default function ReviewMosaic({ reviews, instructorId, onWriteReview }: P
           <p className="font-mono text-[10px] tracking-widest" style={{ color: "var(--muted)" }}>
             Say what would benefit your fellow students — truthful, helpful, & kind.
           </p>
-          <p className="font-mono text-[10px] mt-1" style={{ color: "var(--fore)" }}>
-            Negative reviews are welcome and needed.
-          </p>
         </div>
         <div className="flex-shrink-0">
           <ThinkButton />

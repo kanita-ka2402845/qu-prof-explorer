@@ -9,7 +9,8 @@ const supabaseAdmin = createClient(
 );
 
 export async function POST(req: NextRequest) {
-  const { email } = await req.json();
+    const body = await req.json();
+  const email = String(body.email ?? "").trim().toLowerCase();
 
   if (!email.endsWith('@qu.edu.qa')) {
     return NextResponse.json(

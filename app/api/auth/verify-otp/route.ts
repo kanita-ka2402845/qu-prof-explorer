@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
+import type { Session } from "@supabase/supabase-js";
 
 const supabaseAdmin = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -12,25 +13,35 @@ const supabasePublic = createClient(
 );
 
 export async function POST(req: NextRequest) {
-  const { email, code } = await req.json();
+  const body = await req.json();
+  const email = String(body.email ?? "").trim().toLowerCase();
+  const token = String(body.code ?? "").replace(/\D/g, "");
 
-  const { data: sessionData, error } = await supabasePublic.auth.verifyOtp({
-  email,
-  token: code,
-  type: "magiclink",
-});
-
-  if (error || !sessionData.session) {
-    return NextResponse.json({ error: error?.message || "Invalid or expired code." }, { status: 400 });
+  if (!email.endsWith("@qu.edu.qa") || token.length === 0) {
+    return NextResponse.json({ error: "Invalid email or code." }, { status: 400 });
   }
 
-  const userId = sessionData.session.user.id;
+  // New accounts get a "signup" token, existing ones a "magiclink" token
+  let session: Session | null = null;
+  for (const type of ["magiclink", "signup", "email"] as const) {
+    const { data, error } = await supabasePublic.auth.verifyOtp({ email, token, type });
+    if (!error && data.session) { session = data.session; break; }
+  }
+
+  if (!session) {
+    return NextResponse.json(
+      { error: "That code is invalid or expired. Request a new one and use the newest email." },
+      { status: 400 }
+    );
+  }
+
+  const userId = session.user.id;
 
   const { data: profile } = await supabaseAdmin
     .from("profiles")
     .select("id")
     .eq("id", userId)
-    .single();
+    .maybeSingle();
 
   if (!profile) {
     const adjectives = ['Quiet','Clear','Sharp','Steady','Bright','Calm','Swift','Bold','Keen','Wise'];
@@ -49,7 +60,7 @@ export async function POST(req: NextRequest) {
 
   return NextResponse.json({
     success: true,
-    access_token: sessionData.session.access_token,
-    refresh_token: sessionData.session.refresh_token,
+    access_token: session.access_token,
+    refresh_token: session.refresh_token,
   });
 }
