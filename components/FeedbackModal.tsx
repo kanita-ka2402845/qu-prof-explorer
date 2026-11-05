@@ -84,7 +84,7 @@ export default function FeedbackModal({ onClose }: Props) {
                   Signal received.
                 </p>
                 <p className="text-[13px]" style={{ color: "var(--fore)" }}>
-                  Thanks for taking the time — every suggestion helps shape this platform.
+                  JazakAllah khair.
                 </p>
                 <button
                   onClick={onClose}
