@@ -100,12 +100,12 @@ export default function FeedbackModal({ onClose }: Props) {
             ) : (
               <div className="flex flex-col gap-5">
                 <p className="text-[13px]" style={{ color: "var(--fore)" }}>
-                  Have an idea to make this better? We're listening.
+                  How can I make my website better? 
                 </p>
 
                 <div className="flex flex-col gap-2">
                   <label className="font-mono text-[10px] uppercase tracking-widest" style={{ color: "var(--muted)" }}>
-                    QU Email <span style={{ fontWeight: 400 }}>— optional, in case we want to follow up</span>
+                    QU Email <span style={{ fontWeight: 400 }}>— optional, for follow up</span>
                   </label>
                   <input
                     type="email"
