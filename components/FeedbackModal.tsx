@@ -109,7 +109,7 @@ export default function FeedbackModal({ onClose }: Props) {
                   </label>
                   <input
                     type="email"
-                    placeholder="yourname@qu.edu.qa"
+                    placeholder="Your QU email (optional)"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     className="rounded-lg px-4 py-3 text-[16px] sm:text-[13px] outline-none"
